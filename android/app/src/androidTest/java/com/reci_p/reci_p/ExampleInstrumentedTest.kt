@@ -1,4 +1,4 @@
-package com.marshall.macartney.eric.reci_p
+package com.reci_p.reci_p
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.marshall.macartney.eric.reci_p", appContext.packageName)
+        assertEquals("com.reci_p.reci_p", appContext.packageName)
     }
 }

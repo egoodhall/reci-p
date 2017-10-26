@@ -1,4 +1,4 @@
-package com.marshall.macartney.eric.reci_p
+package com.reci_p.reci_p
 
 import org.junit.Test
 
