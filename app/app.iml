@@ -77,6 +77,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testDebug/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestDebug/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/assets" type="java-resource" />
@@ -128,76 +135,76 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="okio-1.6.0" level="project" />
-    <orderEntry type="library" name="firebase-core-11.4.2" level="project" />
-    <orderEntry type="library" name="firebase-database-connection-license-11.4.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="hamcrest-library-1.3" level="project" />
-    <orderEntry type="library" name="play-services-auth-license-11.4.2" level="project" />
-    <orderEntry type="library" name="okhttp-2.7.2" level="project" />
-    <orderEntry type="library" name="constraint-layout-solver-1.1.0-beta1" level="project" />
-    <orderEntry type="library" scope="TEST" name="espresso-idling-resource-3.0.1" level="project" />
-    <orderEntry type="library" name="guava-20.0" level="project" />
-    <orderEntry type="library" name="firebase-common-license-11.4.2" level="project" />
-    <orderEntry type="library" name="transition-26.1.0" level="project" />
-    <orderEntry type="library" name="customtabs-26.1.0" level="project" />
-    <orderEntry type="library" name="support-compat-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-database-11.4.2" level="project" />
-    <orderEntry type="library" name="firebase-database-license-11.4.2" level="project" />
-    <orderEntry type="library" name="support-annotations-26.1.0" level="project" />
-    <orderEntry type="library" name="support-v4-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-database-connection-11.4.2" level="project" />
-    <orderEntry type="library" name="support-fragment-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-ui-common-3.1.0" level="project" />
-    <orderEntry type="library" name="play-services-auth-base-license-11.4.2" level="project" />
-    <orderEntry type="library" name="common-1.0.0" level="project" />
-    <orderEntry type="library" name="1_common-1.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="javawriter-2.1.1" level="project" />
-    <orderEntry type="library" name="design-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-common-11.4.2" level="project" />
-    <orderEntry type="library" name="play-services-tasks-11.4.2" level="project" />
-    <orderEntry type="library" name="cardview-v7-26.1.0" level="project" />
-    <orderEntry type="library" name="support-core-ui-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-ui-auth-3.1.0" level="project" />
-    <orderEntry type="library" name="firebase-analytics-license-11.4.2" level="project" />
-    <orderEntry type="library" name="play-services-base-11.4.2" level="project" />
-    <orderEntry type="library" name="firebase-firestore-11.4.2" level="project" />
-    <orderEntry type="library" name="support-media-compat-26.1.0" level="project" />
-    <orderEntry type="library" name="firebase-iid-11.4.2" level="project" />
-    <orderEntry type="library" name="play-services-auth-api-phone-11.4.2" level="project" />
-    <orderEntry type="library" name="recyclerview-v7-26.1.0" level="project" />
-    <orderEntry type="library" name="constraint-layout-1.1.0-beta1" level="project" />
-    <orderEntry type="library" name="play-services-auth-11.4.2" level="project" />
-    <orderEntry type="library" name="support-vector-drawable-26.1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="hamcrest-integration-1.3" level="project" />
-    <orderEntry type="library" name="support-core-utils-26.1.0" level="project" />
-    <orderEntry type="library" name="play-services-auth-api-phone-license-11.4.2" level="project" />
-    <orderEntry type="library" name="firebase-auth-license-11.4.2" level="project" />
-    <orderEntry type="library" name="play-services-base-license-11.4.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="espresso-core-3.0.1" level="project" />
-    <orderEntry type="library" name="kotlin-stdlib-jre7-1.1.51" level="project" />
-    <orderEntry type="library" name="play-services-basement-11.4.2" level="project" />
-    <orderEntry type="library" name="extensions-1.0.0-beta1" level="project" />
-    <orderEntry type="library" name="firebase-auth-11.4.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="jsr305-2.0.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="runner-1.0.1" level="project" />
-    <orderEntry type="library" name="firebase-ui-firestore-3.1.0" level="project" />
-    <orderEntry type="library" name="firebase-analytics-impl-license-11.4.2" level="project" />
-    <orderEntry type="library" name="firebase-iid-license-11.4.2" level="project" />
-    <orderEntry type="library" name="annotations-13.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="javax.inject-1" level="project" />
-    <orderEntry type="library" name="play-services-tasks-license-11.4.2" level="project" />
-    <orderEntry type="library" name="animated-vector-drawable-26.1.0" level="project" />
-    <orderEntry type="library" name="runtime-1.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="kxml2-2.3.0" level="project" />
-    <orderEntry type="library" name="kotlin-stdlib-1.1.51" level="project" />
-    <orderEntry type="library" name="play-services-auth-base-11.4.2" level="project" />
-    <orderEntry type="library" name="appcompat-v7-26.1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="hamcrest-core-1.3" level="project" />
-    <orderEntry type="library" name="firebase-analytics-11.4.2" level="project" />
-    <orderEntry type="library" name="firebase-analytics-impl-11.4.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="junit-4.12" level="project" />
-    <orderEntry type="library" name="play-services-basement-license-11.4.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="rules-1.0.1" level="project" />
-    <orderEntry type="library" name="runtime-1.0.0-beta1" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-auth-11.4.2" level="project" />
+    <orderEntry type="library" name="com.android.support:support-media-compat-26.1.0" level="project" />
+    <orderEntry type="library" name="com.android.support:recyclerview-v7-26.1.0" level="project" />
+    <orderEntry type="library" name="android.arch.lifecycle:common:1.0.0@jar" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-base-license-11.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="com.squareup:javawriter:2.1.1@jar" level="project" />
+    <orderEntry type="library" name="android.arch.lifecycle:runtime-1.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:appcompat-v7-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-auth-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-basement-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.android.support:support-annotations:26.1.0@jar" level="project" />
+    <orderEntry type="library" name="com.google.guava:guava:20.0@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:support-core-ui-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-iid-11.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="com.android.support.test:runner-1.0.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="com.google.code.findbugs:jsr305:2.0.1@jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="com.android.support.test.espresso:espresso-idling-resource-3.0.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-core:1.3@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:support-compat-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-common-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-database-connection-license-11.4.2" level="project" />
+    <orderEntry type="library" name="android.arch.core:common:1.0.0@jar" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-tasks-11.4.2" level="project" />
+    <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.1.0-beta1" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-integration:1.3@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:customtabs-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-core-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-common-license-11.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="net.sf.kxml:kxml2:2.3.0@jar" level="project" />
+    <orderEntry type="library" name="com.firebaseui:firebase-ui-firestore-3.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-auth-11.4.2" level="project" />
+    <orderEntry type="library" name="com.android.support:transition-26.1.0" level="project" />
+    <orderEntry type="library" name="com.android.support:design-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-base-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-analytics-impl-11.4.2" level="project" />
+    <orderEntry type="library" name="com.squareup.okhttp:okhttp:2.7.2@jar" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-auth-api-phone-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.1.0-beta1@jar" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-tasks-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-iid-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-auth-api-phone-11.4.2" level="project" />
+    <orderEntry type="library" name="org.jetbrains.kotlin:kotlin-stdlib-jre7:1.1.51@jar" level="project" />
+    <orderEntry type="library" scope="TEST" name="junit:junit:4.12@jar" level="project" />
+    <orderEntry type="library" name="android.arch.core:runtime-1.0.0-beta1" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-auth-license-11.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="com.android.support.test.espresso:espresso-core-3.0.1" level="project" />
+    <orderEntry type="library" name="com.android.support:support-fragment-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-firestore-11.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="javax.inject:javax.inject:1@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:support-vector-drawable-26.1.0" level="project" />
+    <orderEntry type="library" name="android.arch.lifecycle:extensions-1.0.0-beta1" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-basement-11.4.2" level="project" />
+    <orderEntry type="library" name="com.firebaseui:firebase-ui-common-3.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-analytics-11.4.2" level="project" />
+    <orderEntry type="library" name="com.firebaseui:firebase-ui-auth-3.1.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-core-utils-26.1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="com.android.support.test:rules-1.0.1" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-auth-base-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-database-connection-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-database-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-auth-base-11.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-library:1.3@jar" level="project" />
+    <orderEntry type="library" name="org.jetbrains.kotlin:kotlin-stdlib:1.1.51@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:support-v4-26.1.0" level="project" />
+    <orderEntry type="library" name="com.squareup.okio:okio:1.6.0@jar" level="project" />
+    <orderEntry type="library" name="org.jetbrains:annotations:13.0@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:animated-vector-drawable-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-database-11.4.2" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-analytics-impl-license-11.4.2" level="project" />
+    <orderEntry type="library" name="com.android.support:cardview-v7-26.1.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-analytics-license-11.4.2" level="project" />
   </component>
 </module>
