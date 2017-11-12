@@ -32,6 +32,19 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:11.4.2'
     implementation 'com.firebaseui:firebase-ui-firestore:3.1.0'
 
+    // Fresco ImageView
+    compile 'com.facebook.fresco:fresco:1.5.0'
+
+    // BottomSheet Image Picker
+    compile 'gun0912.ted:tedbottompicker:1.0.12'
+
+    // Permissions Handler
+    compile 'gun0912.ted:tedpermission:2.1.0'
+
+
+    // Android support
+    compile 'com.android.support:design:26.1.0'
+
     // FirebaseUI for Firebase Auth
     implementation 'com.google.firebase:firebase-auth:11.4.2'
     implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
