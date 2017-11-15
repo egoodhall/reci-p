@@ -41,7 +41,6 @@ dependencies {
     // Permissions Handler
     compile 'gun0912.ted:tedpermission:2.1.0'
 
-
     // Android support
     compile 'com.android.support:design:26.1.0'
 

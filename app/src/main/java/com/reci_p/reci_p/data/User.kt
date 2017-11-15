@@ -11,4 +11,12 @@ data class User (
     var userName: String,
     var displayName: String,
     var following: ArrayList<String>
-)
+) {
+    constructor() : this(
+            photo="",
+            uid="",
+            userName="",
+            displayName="",
+            following=ArrayList()
+    ) {}
+}
