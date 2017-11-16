@@ -17,10 +17,10 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:clickable="true"
-        android:src="@android:drawable/ic_menu_search"
+        android:src="@drawable/ic_add_person"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="16dp"/>
+        />
 
 </android.support.constraint.ConstraintLayout>
