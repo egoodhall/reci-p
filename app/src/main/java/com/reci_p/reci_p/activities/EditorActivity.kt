@@ -17,6 +17,18 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import gun0912.tedbottompicker.TedBottomPicker
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import com.google.android.gms.tasks.OnSuccessListener
+import android.support.annotation.NonNull
+import com.google.android.gms.tasks.OnFailureListener
+
+
+
+
+
+
 
 
 
@@ -69,7 +81,20 @@ class EditorActivity : AppCompatActivity() {
         val tedBottomPicker = TedBottomPicker.Builder(this@EditorActivity)
                 .setOnImageSelectedListener { uri ->
                     // here is selected uri
-                    (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(uri, this@EditorActivity)
+                    val storage = FirebaseStorage.getInstance()
+                    val storageRef = storage.reference.child("images/test.jpg")
+                    val uploadTask = storageRef.putFile(uri)
+
+                    // Register observers to listen for when the download is done or if it fails
+                    uploadTask.addOnFailureListener({ e ->
+                        // Handle unsuccessful uploads
+                        Toast.makeText(this@EditorActivity, "Upload Failed: " + e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    }).addOnSuccessListener({ taskSnapshot ->
+                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        val downloadUrl = taskSnapshot.downloadUrl
+                        (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(downloadUrl, this@EditorActivity)
+                        Toast.makeText(this@EditorActivity, "Upload successful, URL: " + downloadUrl, Toast.LENGTH_SHORT).show()
+                    })
 
                 }
                 .create()
