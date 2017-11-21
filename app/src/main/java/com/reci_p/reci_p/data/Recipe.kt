@@ -1,23 +1,25 @@
 package com.reci_p.reci_p.data
 
+import com.google.gson.annotations.SerializedName
+import io.realm.RealmModel
+
 /**
  *
  *
  * Created by Eric Marshall on 11/11/17
  */
 data class Recipe (
-        var ingredients: List<String>,
-        var specialtyTools: List<String>,
-        var title: String,
-        var description: String,
-        var prepTime: String,
-        var cookTime: String,
-        var instructions: List<String>,
-        var photo: String,
-        var id: String,
-        val creator: String,
-        var owner: String,
-        var creationDate: String,
-        var modifiedDate: String,
-        var rating: Float
-)
+    @SerializedName("ingredients") var ingredients: List<String>,
+    @SerializedName("title") var title: String,
+    @SerializedName("description") var description: String,
+    @SerializedName("prep_time") var prepTime: String,
+    @SerializedName("cook_time") var cookTime: String,
+    @SerializedName("instructions") var instructions: List<String>,
+    @SerializedName("photo") var photo: String,
+    @SerializedName("id") var id: String,
+    @SerializedName("creator") val creator: String,
+    @SerializedName("owner") var owner: String,
+    @SerializedName("creation_ts") var creationTS: Long,
+    @SerializedName("creation_ts") var modifiedTS: Long,
+    @SerializedName("rating") var rating: Float
+) : RealmModel

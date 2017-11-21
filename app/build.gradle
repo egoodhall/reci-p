@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'realm-android'
+
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
@@ -27,6 +29,15 @@ android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Required for Realm
+    implementation 'io.reactivex:rxjava:1.1.0'
+
+    // Request Building
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+
+    // JSON serialization
+    implementation 'com.google.code.gson:gson:2.8.2'
 
     // FirebaseUI for Cloud Firestore
     implementation 'com.google.firebase:firebase-database:11.4.2'
@@ -77,3 +88,9 @@ dependencies {
 
 // Firebase requires this
 apply plugin: 'com.google.gms.google-services'
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

@@ -11,6 +11,8 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.reci_p.reci_p.R
+import com.reci_p.reci_p.data.User
+import com.reci_p.reci_p.helpers.DataManager
 
 class LoginActivity : AppCompatActivity() {
 
@@ -38,6 +40,15 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun launchRootActivity() {
+        val firebaseUser = FirebaseAuth.getInstance().currentUser!!
+        DataManager.createUser(User(firebaseUser.photoUrl.toString(), firebaseUser.uid, firebaseUser.email!!, firebaseUser.displayName!!, ArrayList<String>()))
+        { success: Boolean ->
+            if (success) {
+                Log.i("Reci-P-Login", "User returning")
+            } else {
+                Log.i("Reci-P-Login", "User signup failed")
+            }
+        }
         startActivity(Intent(applicationContext, EditorActivity::class.java))
         finish()
     }

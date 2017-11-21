@@ -5,4 +5,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="searchPrompt">Search</string>
     <string name="recipe_image">Recipe Image</string>
+    <!--<string name="api_base_url">https://reci-p.appspot.com/api/v1</string>-->
+    <string name="api_base_url">http://10.0.2.2:8080/api/v1</string>
+    <string name="api_users">/users</string>
+    <string name="api_recipes">/recipes</string>
+    <string name="api_feed">/feed</string>
 </resources>
