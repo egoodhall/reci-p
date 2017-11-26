@@ -89,6 +89,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/recipeTitle" />
 
             <RelativeLayout
+                android:id="@+id/ingredient_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/ingredientHolder">
@@ -110,7 +111,7 @@
                     android:layout_toRightOf="@+id/add_ingredient_button"
                     android:ems="10"
                     android:hint="Ingredient"
-                    android:inputType="textPersonName" />
+                    android:inputType="text" />
             </RelativeLayout>
 
             <LinearLayout
@@ -126,18 +127,96 @@
 
             </LinearLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/instruction_layout"
+                app:layout_constraintTop_toBottomOf="@+id/instructionHolder">
+
+
+                <Button
+                    android:id="@+id/add_instruction_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+
+                    android:onClick="addInstruction"
+                    android:text="+"
+                    android:textColor="@color/primaryColor" />
+
+                <EditText
+                    android:id="@+id/instructionText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/add_instruction_button"
+                    android:ems="10"
+                    android:hint="Instruction"
+                    android:inputType="text"
+                    android:singleLine="false" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/instructionHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ingredient_layout">
+
+            </LinearLayout>
+
+
+            <EditText
+                android:id="@+id/recipePrepTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="Prep Time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/instruction_layout" />
+
+            <EditText
+                android:id="@+id/recipeCookTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="Cook Time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recipePrepTime" />
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/image_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/btn_google_dark_pressed"
-        app:layout_anchor="@id/appbar"
         android:onClick="updateImage"
+        android:src="@drawable/ic_add_a_photo_white_24dp"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/save_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:onClick="saveRecipe"
+        android:src="@drawable/ic_save"
+        app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|left|end" />
 </android.support.design.widget.CoordinatorLayout>

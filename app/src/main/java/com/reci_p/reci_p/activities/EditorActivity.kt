@@ -22,15 +22,11 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.google.android.gms.tasks.OnSuccessListener
 import android.support.annotation.NonNull
+import android.view.LayoutInflater
 import com.google.android.gms.tasks.OnFailureListener
-
-
-
-
-
-
-
-
+import android.view.animation.TranslateAnimation
+import android.view.animation.Animation
+import org.jetbrains.anko.custom.style
 
 
 class EditorActivity : AppCompatActivity() {
@@ -60,20 +56,60 @@ class EditorActivity : AppCompatActivity() {
     }
 
     fun addIngredient(v : View) {
-        val ingredient = TextView(this)
-        ingredient.textSize = 18F
-        ingredient.padding = 18
-        ingredient.text = (findViewById<EditText>(R.id.ingredientText)).text
+        val ingredient = LayoutInflater.from(this).inflate(R.layout.ingredient, null)
+        ingredient.findViewById<TextView>(R.id.ingredient_text).text = (findViewById<EditText>(R.id.ingredientText)).text
         ingredient.onLongClick { v -> removeIngredient(v!!) }
 
-        if (ingredient.text.toString() != "") {
+        if (ingredient.findViewById<TextView>(R.id.ingredient_text).text.toString() != "") {
             findViewById<LinearLayout>(R.id.ingredientHolder).addView(ingredient)
             (findViewById<EditText>(R.id.ingredientText)).text.clear()
         }
     }
 
     fun removeIngredient(v: View) {
-        findViewById<LinearLayout>(R.id.ingredientHolder).removeView(v)
+        val linLayout = findViewById<LinearLayout>(R.id.ingredientHolder)
+//        val animation = TranslateAnimation(0f, 1500f, 0f, 0f) //May need to check the direction you want.
+        val animation = TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 100f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f) //May need to check the direction you want.
+        animation.duration = 1000
+        animation.fillAfter = true
+        v.startAnimation(animation)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(arg0: Animation) {}
+            override fun onAnimationRepeat(arg0: Animation) {}
+            override fun onAnimationEnd(arg0: Animation) {
+                v.visibility = View.GONE
+                linLayout.removeView(v)
+            }
+        })
+    }
+
+
+    fun addInstruction(v : View) {
+        val ingredient = LayoutInflater.from(this).inflate(R.layout.ingredient, null)
+        ingredient.findViewById<TextView>(R.id.ingredient_text).text = (findViewById<EditText>(R.id.instructionText)).text
+        ingredient.onLongClick { v -> removeInstruction(v!!) }
+
+        if (ingredient.findViewById<TextView>(R.id.ingredient_text).text.toString() != "") {
+            findViewById<LinearLayout>(R.id.instructionHolder).addView(ingredient)
+            (findViewById<EditText>(R.id.instructionText)).text.clear()
+        }
+    }
+
+    fun removeInstruction(v: View) {
+        val linLayout = findViewById<LinearLayout>(R.id.ingredientHolder)
+//        val animation = TranslateAnimation(0f, 1500f, 0f, 0f) //May need to check the direction you want.
+        val animation = TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 100f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f) //May need to check the direction you want.
+        animation.duration = 1000
+        animation.fillAfter = true
+        v.startAnimation(animation)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(arg0: Animation) {}
+            override fun onAnimationRepeat(arg0: Animation) {}
+            override fun onAnimationEnd(arg0: Animation) {
+                v.visibility = View.GONE
+                linLayout.removeView(v)
+            }
+        })
     }
 
     fun updateImage(v: View) {
@@ -100,6 +136,10 @@ class EditorActivity : AppCompatActivity() {
                 .create()
 
         tedBottomPicker.show(supportFragmentManager)
+    }
+
+    fun saveRecipe(v: View) {
+        Toast.makeText(this@EditorActivity, "Save button pressed", Toast.LENGTH_SHORT).show()
     }
 
 }
