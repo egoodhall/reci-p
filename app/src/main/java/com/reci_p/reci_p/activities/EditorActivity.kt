@@ -1,18 +1,15 @@
 package com.reci_p.reci_p.activities
 
 import android.Manifest
+import android.graphics.Typeface
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import com.reci_p.reci_p.R
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
 import org.jetbrains.anko.padding
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
-import android.widget.Toast
 import com.facebook.drawee.view.SimpleDraweeView
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
@@ -26,10 +23,30 @@ import android.view.LayoutInflater
 import com.google.android.gms.tasks.OnFailureListener
 import android.view.animation.TranslateAnimation
 import android.view.animation.Animation
+import android.widget.*
+import com.reci_p.reci_p.data.Recipe
+import org.jetbrains.anko.childrenSequence
 import org.jetbrains.anko.custom.style
+import org.jetbrains.anko.imageURI
+import java.util.*
 
 
 class EditorActivity : AppCompatActivity() {
+
+
+    var recipeModel = Recipe(Collections.emptyList<String>(),
+                        "",
+                        "",
+                        "",
+                        "",
+                        Collections.emptyList<String>(),
+                        "",
+                        "",
+                        "",
+                        "",
+                        0L,
+                        0L,
+                        0f)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,23 +70,25 @@ class EditorActivity : AppCompatActivity() {
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
 
+        setRecipeView()
+
     }
 
     fun addIngredient(v : View) {
-        val ingredient = LayoutInflater.from(this).inflate(R.layout.ingredient, null)
-        ingredient.findViewById<TextView>(R.id.ingredient_text).text = (findViewById<EditText>(R.id.ingredientText)).text
-        ingredient.onLongClick { v -> removeIngredient(v!!) }
-
-        if (ingredient.findViewById<TextView>(R.id.ingredient_text).text.toString() != "") {
-            findViewById<LinearLayout>(R.id.ingredientHolder).addView(ingredient)
-            (findViewById<EditText>(R.id.ingredientText)).text.clear()
-        }
+        recipeModel.ingredients += (findViewById<EditText>(R.id.ingredientText)).text.toString()
+        updateRecipeView()
     }
 
     fun removeIngredient(v: View) {
         val linLayout = findViewById<LinearLayout>(R.id.ingredientHolder)
-//        val animation = TranslateAnimation(0f, 1500f, 0f, 0f) //May need to check the direction you want.
-        val animation = TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 100f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f) //May need to check the direction you want.
+        val ingr = v.findViewById<TextView>(R.id.ingredient_text).text.toString()
+        val newIngredients = recipeModel.ingredients.toMutableList()
+        newIngredients.remove(ingr)
+        recipeModel.ingredients = newIngredients
+        val animation = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f,
+                Animation.RELATIVE_TO_PARENT, 1.1f,
+                Animation.RELATIVE_TO_PARENT, 0f,
+                Animation.RELATIVE_TO_PARENT, 0f)
         animation.duration = 1000
         animation.fillAfter = true
         v.startAnimation(animation)
@@ -85,20 +104,20 @@ class EditorActivity : AppCompatActivity() {
 
 
     fun addInstruction(v : View) {
-        val ingredient = LayoutInflater.from(this).inflate(R.layout.ingredient, null)
-        ingredient.findViewById<TextView>(R.id.ingredient_text).text = (findViewById<EditText>(R.id.instructionText)).text
-        ingredient.onLongClick { v -> removeInstruction(v!!) }
-
-        if (ingredient.findViewById<TextView>(R.id.ingredient_text).text.toString() != "") {
-            findViewById<LinearLayout>(R.id.instructionHolder).addView(ingredient)
-            (findViewById<EditText>(R.id.instructionText)).text.clear()
-        }
+        recipeModel.instructions += (findViewById<EditText>(R.id.instructionText)).text.toString()
+        updateRecipeView()
     }
 
     fun removeInstruction(v: View) {
-        val linLayout = findViewById<LinearLayout>(R.id.ingredientHolder)
-//        val animation = TranslateAnimation(0f, 1500f, 0f, 0f) //May need to check the direction you want.
-        val animation = TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 100f, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0f) //May need to check the direction you want.
+        val linLayout = findViewById<LinearLayout>(R.id.instructionHolder)
+        val ingr = v.findViewById<TextView>(R.id.instruction_text).text.toString()
+        val newInstructions = recipeModel.instructions.toMutableList()
+        newInstructions.remove(ingr)
+        recipeModel.instructions = newInstructions
+        val animation = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f,
+                Animation.RELATIVE_TO_PARENT, 1.1f,
+                Animation.RELATIVE_TO_PARENT, 0f,
+                Animation.RELATIVE_TO_PARENT, 0f)
         animation.duration = 1000
         animation.fillAfter = true
         v.startAnimation(animation)
@@ -112,23 +131,94 @@ class EditorActivity : AppCompatActivity() {
         })
     }
 
+    fun setRecipeView() {
+        findViewById<EditText>(R.id.recipeTitle).setText(recipeModel.title)
+        findViewById<EditText>(R.id.recipeDesc).setText(recipeModel.description)
+        findViewById<EditText>(R.id.recipePrepTime).setText(recipeModel.prepTime)
+        findViewById<EditText>(R.id.recipeCookTime).setText(recipeModel.cookTime)
+        findViewById<EditText>(R.id.recipeCookTime).setText(recipeModel.cookTime)
+        if (!recipeModel.photo.isEmpty()) {
+            val storage = FirebaseStorage.getInstance()
+            val storageRef = storage.reference.child(recipeModel.photo)
+            (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(storageRef.downloadUrl.result, this@EditorActivity)
+        }
+        findViewById<RatingBar>(R.id.recipeRating).rating = recipeModel.rating
+
+        findViewById<LinearLayout>(R.id.ingredientHolder).removeAllViews()
+        recipeModel.ingredients.forEach { ingr ->
+            if (!ingr.isEmpty()) {
+                val view = LayoutInflater.from(this).inflate(R.layout.ingredient, null)
+                view.findViewById<TextView>(R.id.ingredient_text).text = ingr
+                view.onLongClick { v -> removeIngredient(v!!) }
+
+                findViewById<LinearLayout>(R.id.ingredientHolder).addView(view)
+                (findViewById<EditText>(R.id.ingredientText)).text.clear()
+            }
+        }
+
+        findViewById<LinearLayout>(R.id.instructionHolder).removeAllViews()
+        recipeModel.instructions.forEach { inst ->
+            if (!inst.isEmpty()) {
+                val view = LayoutInflater.from(this).inflate(R.layout.instruction, null)
+                view.findViewById<TextView>(R.id.instruction_text).text = inst
+                view.onLongClick { v -> removeInstruction(v!!) }
+
+                findViewById<LinearLayout>(R.id.instructionHolder).addView(view)
+                (findViewById<EditText>(R.id.instructionText)).text.clear()
+            }
+
+        }
+
+    }
+
+    fun updateRecipeView() {
+        findViewById<LinearLayout>(R.id.ingredientHolder).removeAllViews()
+        recipeModel.ingredients.forEach { ingr ->
+            if (!ingr.isEmpty()) {
+                val view = LayoutInflater.from(this).inflate(R.layout.ingredient, null)
+                view.findViewById<TextView>(R.id.ingredient_text).text = ingr
+                view.onLongClick { v -> removeIngredient(v!!) }
+
+                findViewById<LinearLayout>(R.id.ingredientHolder).addView(view)
+                (findViewById<EditText>(R.id.ingredientText)).text.clear()
+            }
+        }
+
+        findViewById<LinearLayout>(R.id.instructionHolder).removeAllViews()
+        recipeModel.instructions.forEach { inst ->
+            if (!inst.isEmpty()) {
+                val view = LayoutInflater.from(this).inflate(R.layout.instruction, null)
+                view.findViewById<TextView>(R.id.instruction_text).text = inst
+                view.onLongClick { v -> removeInstruction(v!!) }
+
+                findViewById<LinearLayout>(R.id.instructionHolder).addView(view)
+                (findViewById<EditText>(R.id.instructionText)).text.clear()
+            }
+
+        }
+
+    }
+
     fun updateImage(v: View) {
 
         val tedBottomPicker = TedBottomPicker.Builder(this@EditorActivity)
                 .setOnImageSelectedListener { uri ->
                     // here is selected uri
+                    val photo = "images/test.jpg"
                     val storage = FirebaseStorage.getInstance()
-                    val storageRef = storage.reference.child("images/test.jpg")
+                    val storageRef = storage.reference.child(photo)
                     val uploadTask = storageRef.putFile(uri)
+                    (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(uri, this@EditorActivity)
 
                     // Register observers to listen for when the download is done or if it fails
                     uploadTask.addOnFailureListener({ e ->
                         // Handle unsuccessful uploads
+                        (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(null as String?)
                         Toast.makeText(this@EditorActivity, "Upload Failed: " + e.localizedMessage, Toast.LENGTH_SHORT).show()
                     }).addOnSuccessListener({ taskSnapshot ->
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                         val downloadUrl = taskSnapshot.downloadUrl
-                        (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(downloadUrl, this@EditorActivity)
+                        recipeModel.photo = photo
                         Toast.makeText(this@EditorActivity, "Upload successful, URL: " + downloadUrl, Toast.LENGTH_SHORT).show()
                     })
 
@@ -138,8 +228,18 @@ class EditorActivity : AppCompatActivity() {
         tedBottomPicker.show(supportFragmentManager)
     }
 
+    fun setRecipeFromView() {
+        recipeModel.title = (findViewById<EditText>(R.id.recipeTitle)).text.toString()
+        recipeModel.description = (findViewById<EditText>(R.id.recipeDesc)).text.toString()
+        recipeModel.prepTime = (findViewById<EditText>(R.id.recipePrepTime)).text.toString()
+        recipeModel.cookTime = (findViewById<EditText>(R.id.recipeCookTime)).text.toString()
+        recipeModel.rating = findViewById<RatingBar>(R.id.recipeRating).rating
+
+    }
+
     fun saveRecipe(v: View) {
-        Toast.makeText(this@EditorActivity, "Save button pressed", Toast.LENGTH_SHORT).show()
+        setRecipeFromView()
+        Toast.makeText(this@EditorActivity, "Recipe: " + recipeModel.toString(), Toast.LENGTH_SHORT).show()
     }
 
 }
