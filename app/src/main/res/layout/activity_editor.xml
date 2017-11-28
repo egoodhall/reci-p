@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:toolbarId="@+id/toolbar"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
             app:contentScrim="?attr/colorPrimary">
 
