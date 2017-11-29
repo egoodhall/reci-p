@@ -236,6 +236,7 @@ class EditorActivity : AppCompatActivity() {
                 Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()
             }
         })
+        Toast.makeText(this@EditorActivity, "Recipe creation attempted", Toast.LENGTH_SHORT).show()
     }
 
 }
