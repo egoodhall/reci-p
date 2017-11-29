@@ -14,6 +14,7 @@ import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.User
 import com.reci_p.reci_p.helpers.DataManager
 import io.realm.RealmList
+
 class LoginActivity : AppCompatActivity() {
 
     internal val RC_SIGN_IN = 0
