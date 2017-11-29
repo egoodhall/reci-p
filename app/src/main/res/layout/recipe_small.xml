@@ -8,7 +8,7 @@
     android:layout_marginBottom="8dp"
     android:elevation="4dp">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/recipeSmall_photo"
         android:layout_width="60dp"
         android:layout_height="60dp"

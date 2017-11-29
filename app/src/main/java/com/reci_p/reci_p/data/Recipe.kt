@@ -2,10 +2,13 @@ package com.reci_p.reci_p.data
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.annotations.SerializedName
+import com.reci_p.reci_p.helpers.DataManager.Companion.gson
+import com.reci_p.reci_p.interfaces.Parseable
+import com.reci_p.reci_p.interfaces.Serializable
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
-import java.io.Serializable
+import org.json.JSONObject
 import java.util.*
 
 /**
@@ -27,7 +30,45 @@ open class Recipe (
         @SerializedName("creation_ts") var creationTS: Long = Date().time,
         @SerializedName("creation_ts") var modifiedTS: Long = Date().time,
         @SerializedName("rating") var rating: Float = 0f
-) : RealmObject(), Serializable {
+) : RealmObject() {
+    companion object : Parseable<Recipe>, Serializable<Recipe> {
+
+        override fun json(recipe: Recipe): String {
+            return gson.toJson(recipe)
+        }
+
+        override fun parse(json: String): Recipe {
+            val obj = JSONObject(json)
+            val recipe = Recipe()
+            if (obj.getString("title") != null) recipe.title = obj.getString("title") else ""
+            if (obj.getString("description") != null) recipe.description = obj.getString("description") else ""
+            if (obj.getString("prep_time") != null) recipe.prepTime = obj.getString("prep_time") else ""
+            if (obj.getString("cook_time") != null) recipe.cookTime = obj.getString("cook_time") else ""
+
+            if (obj.getJSONArray("ingredients") != null) {
+                val ingr = obj.getJSONArray("ingredients")
+                for (idx in 0..ingr.length()) {
+                    recipe.ingredients.add(ingr.get(idx) as String)
+                }
+            }
+            if (obj.getJSONArray("instructions") != null) {
+                val instr = obj.getJSONArray("instructions")
+                for (idx in 0..instr.length()) {
+                    recipe.ingredients.add(instr.get(idx) as String)
+                }
+            }
+            if (obj.getString("photo") != null) recipe.photo = obj.getString("photo") else ""
+            if (obj.getString("id") != null) recipe.id = obj.getString("id") else ""
+            if (obj.getString("creator") != null) recipe.creator = obj.getString("creator") else ""
+            if (obj.getString("owner") != null) recipe.owner = obj.getString("owner") else ""
+            recipe.creationTS = obj.getLong("creation_ts")
+            recipe.modifiedTS = obj.getLong("modified_ts")
+            recipe.rating = obj.getDouble("rating").toFloat()
+            return recipe
+        }
+
+    }
+
     override fun toString(): String {
         return String.format("Recipe(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 title,
@@ -45,4 +86,3 @@ open class Recipe (
                 rating.toString())
     }
 }
-

@@ -8,11 +8,11 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/myProfile_profileLarge"
+        android:id="@+id/fragmentMyProfile_profileLarge"
         layout="@layout/profile_large"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/myProfile_followingList"
+        android:id="@+id/fragmentMyProfile_followingList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/profile_small"/>

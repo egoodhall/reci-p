@@ -2,8 +2,8 @@ package com.reci_p.reci_p.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -13,7 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.User
 import com.reci_p.reci_p.helpers.DataManager
-import io.realm.RealmList
 
 class LoginActivity : AppCompatActivity() {
 
@@ -42,10 +41,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun launchRootActivity() {
         val firebaseUser = FirebaseAuth.getInstance().currentUser!!
-        DataManager.createUser(User(firebaseUser.photoUrl.toString(), firebaseUser.uid, firebaseUser.email!!, firebaseUser.displayName!!, RealmList<String>()))
-        { success: Boolean ->
-            if (success) {
-                Log.i("Reci-P-Login", "User returning")
+        val newUser = User(firebaseUser.photoUrl.toString(), firebaseUser.uid, firebaseUser.email!!, firebaseUser.displayName!!)
+        DataManager.createUser(newUser) {
+            if (it != null) {
+                DataManager.getUser(firebaseUser.uid, true) {
+                    Log.i("Reci-P-Login", "User returning")
+                }
             } else {
                 Log.i("Reci-P-Login", "User signup failed")
             }
