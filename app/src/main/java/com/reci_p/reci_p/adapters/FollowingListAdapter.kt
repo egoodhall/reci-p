@@ -2,6 +2,7 @@ package com.reci_p.reci_p.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,7 @@ class FollowingListAdapter(val data: MutableList<User>,
         holder?.actionButton?.text = "Unsubscribe"
         holder?.actionButton?.setOnClickListener { view -> onClickAction(view, position) }
         holder?.view?.setOnClickListener { onClickCell(data[position]) }
+        Log.d("Reci-P", "Binding view")
     }
 
     override fun getItemCount(): Int {

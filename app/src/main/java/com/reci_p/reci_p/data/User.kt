@@ -3,7 +3,6 @@ package com.reci_p.reci_p.data
 import com.google.gson.annotations.SerializedName
 import com.reci_p.reci_p.helpers.DataManager.Companion.gson
 import com.reci_p.reci_p.interfaces.Parseable
-import com.reci_p.reci_p.interfaces.Serializable
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -22,7 +21,7 @@ open class User (
         @SerializedName("displayname") var displayName: String = "",
         @SerializedName("following") var following: RealmList<String> = RealmList()
 ) : RealmObject() {
-    companion object : Parseable<User>, Serializable<User> {
+    companion object : Parseable<User> {
         override fun json(user: User): String {
             return gson.toJson(user)
         }
