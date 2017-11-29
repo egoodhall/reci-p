@@ -3,7 +3,9 @@ package com.reci_p.reci_p.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +19,7 @@ import com.reci_p.reci_p.activities.LoginActivity
 import com.reci_p.reci_p.adapters.FollowingListAdapter
 import com.reci_p.reci_p.data.User
 import com.reci_p.reci_p.helpers.DataManager
+import java.util.*
 
 /**
  * Updated by Sienna Mosher on 11/29/17.
@@ -43,6 +46,7 @@ class MyProfileFragment : Fragment() {
         val logoutButton = profile.findViewById<Button>(R.id.profileLarge_actionButton)
         logoutButton.setOnClickListener { view: View -> logOut(view) }
         logoutButton.text = "Log Out"
+        logoutButton.isEnabled = true
 
         // Set displayed values for username and display name
         profile.findViewById<TextView>(R.id.profileLarge_userName).text = currentUser.email
@@ -56,28 +60,38 @@ class MyProfileFragment : Fragment() {
         // Set up the recyclerview of users being followed
         profile.findViewById<TextView>(R.id.profileLarge_title).text = "Following:"
         followingList = view.findViewById<RecyclerView>(R.id.fragmentMyProfile_followingList)
-        DataManager.getUser(currentUser.uid) {
-            populateFollowingList(it!!, followingList)
-        }
+        populateFollowingList(currentUser.uid, followingList)
 
         return view
     }
 
-    fun populateFollowingList(user: User, list: RecyclerView) {
-        DataManager.getFollowing(user.id) { users ->
-            data = users as ArrayList<User>
+    fun populateFollowingList(uid: String, list: RecyclerView) {
+        data = ArrayList()
 
-            val unsubscribeHandler = { view: View, pos: Int ->
-                (view as Button).text = ""
-                data.removeAt(pos)
-                list.adapter.notifyItemRemoved(pos)
+        val unsubscribeHandler = { view: View, pos: Int ->
+            (view as Button).text = ""
+            data.removeAt(pos)
+            list.adapter.notifyItemRemoved(pos)
+        }
+
+        val launchUserProfile = { user: User ->
+            // TODO: Launch activity
+        }
+
+        list.adapter = FollowingListAdapter(data, launchUserProfile, unsubscribeHandler)
+
+        list.layoutManager = LinearLayoutManager(activity.applicationContext)
+
+        // Populate data
+        DataManager.getFollowing(uid) { users ->
+            val adapter = list.adapter as FollowingListAdapter
+            Log.d("Reci-P", "${adapter.data.size} before")
+            users!!.forEach {
+                (list.adapter as FollowingListAdapter).data.add(it)
+                list.adapter.notifyDataSetChanged()
+                Log.d("Reci-P", "add ${it.toString()}")
             }
-
-            val launchUserProfile = { user: User ->
-                // TODO: Launch activity
-            }
-
-            list.adapter = FollowingListAdapter(data, launchUserProfile, unsubscribeHandler)
+            Log.d("Reci-P", "${adapter.data.size} after")
         }
     }
 
