@@ -101,4 +101,9 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <!-- Bottom navigation strings: -->
+    <string name="title_my_recipes">My Recipes</string>
+    <string name="title_my_profile">My Profile</string>
+    <string name="title_recipe_feed">Recipe Feed</string>
+
 </resources>

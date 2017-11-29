@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.i("Reci-P-Login", "User signup failed")
             }
         }
-        startActivity(Intent(applicationContext, EditorActivity::class.java))
+        startActivity(Intent(applicationContext, MainActivity::class.java))
         finish()
     }
 
