@@ -1,45 +1,35 @@
 package com.reci_p.reci_p.activities
 
 import android.Manifest
-import android.graphics.Typeface
-import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import com.reci_p.reci_p.R
+import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
 import android.view.View
-import org.jetbrains.anko.padding
-import org.jetbrains.anko.sdk25.coroutines.onLongClick
+import android.view.animation.Animation
+import android.view.animation.TranslateAnimation
+import android.widget.*
 import com.facebook.drawee.view.SimpleDraweeView
+import com.google.firebase.storage.FirebaseStorage
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
-import gun0912.tedbottompicker.TedBottomPicker
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
-import com.google.android.gms.tasks.OnSuccessListener
-import android.support.annotation.NonNull
-import android.view.LayoutInflater
-import com.google.android.gms.tasks.OnFailureListener
-import android.view.animation.TranslateAnimation
-import android.view.animation.Animation
-import android.widget.*
+import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
-import org.jetbrains.anko.childrenSequence
-import org.jetbrains.anko.custom.style
-import org.jetbrains.anko.imageURI
+import gun0912.tedbottompicker.TedBottomPicker
+import io.realm.RealmList
+import org.jetbrains.anko.sdk25.coroutines.onLongClick
 import java.util.*
 
 
 class EditorActivity : AppCompatActivity() {
 
 
-    var recipeModel = Recipe(Collections.emptyList<String>(),
+    var recipeModel = Recipe(
                         "",
                         "",
                         "",
                         "",
-                        Collections.emptyList<String>(),
+                        RealmList<String>(),
+                        RealmList<String>(),
                         "",
                         "",
                         "",
@@ -75,7 +65,7 @@ class EditorActivity : AppCompatActivity() {
     }
 
     fun addIngredient(v : View) {
-        recipeModel.ingredients += (findViewById<EditText>(R.id.ingredientText)).text.toString()
+        recipeModel.ingredients.add((findViewById<EditText>(R.id.ingredientText)).text.toString())
         updateRecipeView()
     }
 
@@ -84,7 +74,7 @@ class EditorActivity : AppCompatActivity() {
         val ingr = v.findViewById<TextView>(R.id.ingredient_text).text.toString()
         val newIngredients = recipeModel.ingredients.toMutableList()
         newIngredients.remove(ingr)
-        recipeModel.ingredients = newIngredients
+        recipeModel.ingredients = RealmList(*newIngredients.toTypedArray())
         val animation = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_PARENT, 1.1f,
                 Animation.RELATIVE_TO_PARENT, 0f,
@@ -104,7 +94,7 @@ class EditorActivity : AppCompatActivity() {
 
 
     fun addInstruction(v : View) {
-        recipeModel.instructions += (findViewById<EditText>(R.id.instructionText)).text.toString()
+        recipeModel.instructions.add((findViewById<EditText>(R.id.instructionText)).text.toString())
         updateRecipeView()
     }
 
@@ -113,7 +103,7 @@ class EditorActivity : AppCompatActivity() {
         val ingr = v.findViewById<TextView>(R.id.instruction_text).text.toString()
         val newInstructions = recipeModel.instructions.toMutableList()
         newInstructions.remove(ingr)
-        recipeModel.instructions = newInstructions
+        recipeModel.instructions = RealmList(*newInstructions.toTypedArray())
         val animation = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_PARENT, 1.1f,
                 Animation.RELATIVE_TO_PARENT, 0f,
