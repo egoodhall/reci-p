@@ -18,18 +18,18 @@ import java.util.List;
 
 import com.google.firebase.storage.FirebaseStorage;
 
-public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
+public class recipeLargeAdapter extends RecyclerView.Adapter<recipeLargeAdapter.CustomViewHolder> {
 
     private List<Recipe> recipeList;
     private Context mContext;
 
-    public Adapter(Context context, List<Recipe> myrecipeList) {
+    public recipeLargeAdapter(Context context, List<Recipe> myrecipeList) {
         this.recipeList = myrecipeList;
         this.mContext = context;
     }
 
     @Override
-    public Adapter.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public recipeLargeAdapter.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_large, null);
         //View view = view.findViewById(R.id.recyclerviewRecipes_recyclerview);
         CustomViewHolder viewHolder = new CustomViewHolder(view);
@@ -60,7 +60,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(Adapter.CustomViewHolder holder, int position) {
+    public void onBindViewHolder(recipeLargeAdapter.CustomViewHolder holder, int position) {
         //get recipe
         Recipe recipe = recipeList.get(position);
 
