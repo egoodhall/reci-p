@@ -9,34 +9,24 @@ import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.*
 import com.facebook.drawee.view.SimpleDraweeView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
+import com.reci_p.reci_p.helpers.DataManager
 import gun0912.tedbottompicker.TedBottomPicker
 import io.realm.RealmList
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
+import java.security.Timestamp
 import java.util.*
 
 
 class EditorActivity : AppCompatActivity() {
 
-
-    var recipeModel = Recipe(
-                        "",
-                        "",
-                        "",
-                        "",
-                        RealmList<String>(),
-                        RealmList<String>(),
-                        "",
-                        "",
-                        "",
-                        "",
-                        0L,
-                        0L,
-                        0f)
+    private var recipeModel = Recipe(creator = FirebaseAuth.getInstance().currentUser!!.uid)
+    private var uploadStatus = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +48,7 @@ class EditorActivity : AppCompatActivity() {
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .check();
+                .check()
 
         setRecipeView()
 
@@ -194,22 +184,25 @@ class EditorActivity : AppCompatActivity() {
         val tedBottomPicker = TedBottomPicker.Builder(this@EditorActivity)
                 .setOnImageSelectedListener { uri ->
                     // here is selected uri
-                    val photo = "images/test.jpg"
+                    val photo = "images/" + recipeModel.id + ".png"
                     val storage = FirebaseStorage.getInstance()
                     val storageRef = storage.reference.child(photo)
                     val uploadTask = storageRef.putFile(uri)
                     (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(uri, this@EditorActivity)
+                    uploadStatus = true
 
                     // Register observers to listen for when the download is done or if it fails
                     uploadTask.addOnFailureListener({ e ->
                         // Handle unsuccessful uploads
                         (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(null as String?)
                         Toast.makeText(this@EditorActivity, "Upload Failed: " + e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        uploadStatus = false
                     }).addOnSuccessListener({ taskSnapshot ->
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                         val downloadUrl = taskSnapshot.downloadUrl
                         recipeModel.photo = photo
                         Toast.makeText(this@EditorActivity, "Upload successful, URL: " + downloadUrl, Toast.LENGTH_SHORT).show()
+                        uploadStatus = false
                     })
 
                 }
@@ -228,8 +221,22 @@ class EditorActivity : AppCompatActivity() {
     }
 
     fun saveRecipe(v: View) {
+        if (uploadStatus) {
+            Toast.makeText(this@EditorActivity, "Please wait for image upload to finish before saving.", Toast.LENGTH_SHORT).show()
+            return
+        }
         setRecipeFromView()
-        Toast.makeText(this@EditorActivity, "Recipe: " + recipeModel.toString(), Toast.LENGTH_SHORT).show()
+        recipeModel.modifiedTS = Date().time
+        recipeModel.owner = FirebaseAuth.getInstance().currentUser.toString()
+
+        DataManager.createRecipe(recipeModel, {
+            success ->
+            if (success) {
+                Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
 }

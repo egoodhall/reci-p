@@ -31,8 +31,8 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent" />
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -56,7 +56,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recipeDesc" />
+                app:layout_constraintTop_toBottomOf="@+id/recipeCookTime" />
 
             <EditText
                 android:id="@+id/recipeTitle"
@@ -175,12 +175,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="Prep Time"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/instruction_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/recipeDesc" />
 
             <EditText
                 android:id="@+id/recipeCookTime"
@@ -188,7 +187,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="Cook Time"
                 app:layout_constraintEnd_toEndOf="parent"
