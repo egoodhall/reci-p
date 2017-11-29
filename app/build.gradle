@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
+apply plugin: 'kotlin-kapt'
+
 apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'realm-android'
@@ -31,9 +33,6 @@ android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    // Required for Realm
-    implementation 'io.reactivex:rxjava:1.1.0'
 
     // Request Building
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'

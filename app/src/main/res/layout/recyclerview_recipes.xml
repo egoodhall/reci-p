@@ -8,12 +8,6 @@
     android:orientation="vertical">
 
 
-    <include
-        android:id="@+id/recyclerviewRecipes_toolbarSearch"
-        layout="@layout/toolbar_search"
-        />
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerviewRecipes_recyclerview"
         android:layout_width="match_parent"

@@ -1,10 +1,13 @@
 package com.reci_p.reci_p.data
 
 import com.google.gson.annotations.SerializedName
+import com.reci_p.reci_p.helpers.DataManager.Companion.gson
+import com.reci_p.reci_p.interfaces.Parseable
+import com.reci_p.reci_p.interfaces.Serializable
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
-import java.io.Serializable
+import org.json.JSONObject
 import java.util.*
 
 /**
@@ -18,4 +21,22 @@ open class User (
         @SerializedName("username") var userName: String = "",
         @SerializedName("displayname") var displayName: String = "",
         @SerializedName("following") var following: RealmList<String> = RealmList()
-) : RealmObject(), Serializable
+) : RealmObject() {
+    companion object : Parseable<User>, Serializable<User> {
+        override fun json(user: User): String {
+            return gson.toJson(user)
+        }
+
+        override fun parse(json: String): User {
+            val obj = JSONObject(json)
+
+            return User(
+                    obj.getString("photo"),
+                    obj.getString("id"),
+                    obj.getString("username"),
+                    obj.getString("displayname")
+            )
+        }
+
+    }
+}
