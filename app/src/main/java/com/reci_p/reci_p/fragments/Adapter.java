@@ -32,7 +32,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
     @Override
     public Adapter.CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_large, null);
-        //View view1 = view.findViewById(R.id.recyclerviewRecipes_recyclerview);
+        //View view = view.findViewById(R.id.recyclerviewRecipes_recyclerview);
         CustomViewHolder viewHolder = new CustomViewHolder(view);
         return viewHolder;
     }
