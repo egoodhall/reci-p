@@ -26,7 +26,7 @@ open class Recipe (
         @SerializedName("creator") var creator: String = "",
         @SerializedName("owner") var owner: String = "",
         @SerializedName("creation_ts") var creationTS: Long = Date().time,
-        @SerializedName("creation_ts") var modifiedTS: Long = Date().time,
+        @SerializedName("modified_ts") var modifiedTS: Long = Date().time,
         @SerializedName("rating") var rating: Float = 0f
 ) : RealmObject() {
     companion object : Parseable<Recipe> {
