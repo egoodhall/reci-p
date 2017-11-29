@@ -1,10 +1,8 @@
 package com.reci_p.reci_p.data
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.annotations.SerializedName
 import com.reci_p.reci_p.helpers.DataManager.Companion.gson
 import com.reci_p.reci_p.interfaces.Parseable
-import com.reci_p.reci_p.interfaces.Serializable
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -31,7 +29,7 @@ open class Recipe (
         @SerializedName("creation_ts") var modifiedTS: Long = Date().time,
         @SerializedName("rating") var rating: Float = 0f
 ) : RealmObject() {
-    companion object : Parseable<Recipe>, Serializable<Recipe> {
+    companion object : Parseable<Recipe> {
 
         override fun json(recipe: Recipe): String {
             return gson.toJson(recipe)

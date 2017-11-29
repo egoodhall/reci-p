@@ -11,10 +11,24 @@
         android:id="@+id/fragmentMyProfile_profileLarge"
         layout="@layout/profile_large"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/fragmentMyProfile_followingList"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragmentMyProfile_swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/profile_small"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="0.5"
+        tools:layout_editor_absoluteX="0dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragmentMyProfile_followingList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            tools:listitem="@layout/profile_small"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

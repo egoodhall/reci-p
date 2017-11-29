@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.User
 import com.reci_p.reci_p.helpers.DataManager
+import com.reci_p.reci_p.helpers.DataManager.Companion.realm
 
 class LoginActivity : AppCompatActivity() {
 
@@ -59,6 +60,9 @@ class LoginActivity : AppCompatActivity() {
         val user = FirebaseAuth.getInstance().currentUser!!
         AuthUI.getInstance().signOut(this).addOnCompleteListener { task: Task<Void> ->
             Toast.makeText(applicationContext, "Signed out ${user.displayName}", Toast.LENGTH_SHORT).show()
+            realm.executeTransaction {
+                realm.deleteAll()
+            }
         }
     }
 
