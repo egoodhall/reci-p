@@ -19,7 +19,6 @@ import com.reci_p.reci_p.helpers.DataManager
 import gun0912.tedbottompicker.TedBottomPicker
 import io.realm.RealmList
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
-import java.security.Timestamp
 import java.util.*
 
 
@@ -230,8 +229,8 @@ class EditorActivity : AppCompatActivity() {
         recipeModel.owner = FirebaseAuth.getInstance().currentUser.toString()
 
         DataManager.createRecipe(recipeModel, {
-            success ->
-            if (success) {
+            recipe ->
+            if (recipe != null) {
                 Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()

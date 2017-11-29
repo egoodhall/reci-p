@@ -379,5 +379,6 @@ class DataManager {
                 cb(res.get("success").asBoolean)
             }
         }
+
     }
 }
