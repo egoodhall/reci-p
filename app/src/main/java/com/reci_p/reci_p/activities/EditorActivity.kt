@@ -16,6 +16,7 @@ import com.gun0912.tedpermission.TedPermission
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
 import com.reci_p.reci_p.helpers.DataManager
+import com.reci_p.reci_p.helpers.DataManager.Companion.realm
 import gun0912.tedbottompicker.TedBottomPicker
 import io.realm.RealmList
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
@@ -31,19 +32,19 @@ class EditorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editor)
 
-        val permissionListener = object : PermissionListener {
+        val permissionlistener = object : PermissionListener {
             override fun onPermissionGranted() {
             }
 
             override fun onPermissionDenied(deniedPermissions: ArrayList<String>) {
-                Toast.makeText(this@EditorActivity, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show()
             }
 
 
         }
 
         TedPermission.with(this)
-                .setPermissionListener(permissionListener)
+                .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check()
@@ -127,7 +128,9 @@ class EditorActivity : AppCompatActivity() {
         if (!recipeModel.photo.isEmpty()) {
             val storage = FirebaseStorage.getInstance()
             val storageRef = storage.reference.child(recipeModel.photo)
-            (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(storageRef.downloadUrl.result, this@EditorActivity)
+            storageRef.downloadUrl.addOnCompleteListener { uri ->
+                (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(uri.result, this@EditorActivity)
+            }
         }
         findViewById<RatingBar>(R.id.recipeRating).rating = recipeModel.rating
 
@@ -219,12 +222,13 @@ class EditorActivity : AppCompatActivity() {
     }
 
     private fun setRecipeFromView() {
-        recipeModel.title = (findViewById<EditText>(R.id.recipeTitle)).text.toString()
-        recipeModel.description = (findViewById<EditText>(R.id.recipeDesc)).text.toString()
-        recipeModel.prepTime = (findViewById<EditText>(R.id.recipePrepTime)).text.toString()
-        recipeModel.cookTime = (findViewById<EditText>(R.id.recipeCookTime)).text.toString()
-        recipeModel.rating = findViewById<RatingBar>(R.id.recipeRating).rating
-
+        realm.executeTransaction {
+            recipeModel.title = (findViewById<EditText>(R.id.recipeTitle)).text.toString()
+            recipeModel.description = (findViewById<EditText>(R.id.recipeDesc)).text.toString()
+            recipeModel.prepTime = (findViewById<EditText>(R.id.recipePrepTime)).text.toString()
+            recipeModel.cookTime = (findViewById<EditText>(R.id.recipeCookTime)).text.toString()
+            recipeModel.rating = findViewById<RatingBar>(R.id.recipeRating).rating
+        }
     }
 
     fun saveRecipe(v: View) {
@@ -233,8 +237,10 @@ class EditorActivity : AppCompatActivity() {
             return
         }
         setRecipeFromView()
-        recipeModel.modifiedTS = Date().time
-        recipeModel.owner = FirebaseAuth.getInstance().currentUser!!.uid
+        realm.executeTransaction {
+            recipeModel.modifiedTS = Date().time
+            recipeModel.owner = FirebaseAuth.getInstance().currentUser!!.uid
+        }
 
             DataManager.createRecipe(recipeModel, { recipe ->
                 if (recipe != null) {

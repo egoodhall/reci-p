@@ -18,7 +18,7 @@ import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
 import com.reci_p.reci_p.helpers.DataManager
 
-class LargeRecipeListAdapter(val recipeList: List<Recipe>?, onSelect: (recipe: Recipe) -> Unit) : RecyclerView.Adapter<LargeRecipeListAdapter.CustomViewHolder>() {
+class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recipe: Recipe) -> Unit) : RecyclerView.Adapter<LargeRecipeListAdapter.CustomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LargeRecipeListAdapter.CustomViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recipe_large, parent, false)
@@ -60,6 +60,9 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, onSelect: (recipe: R
             } else {
                 holder.recipeAuthor.text = ""
             }
+        }
+        holder.view.setOnClickListener {
+            onSelect(recipeList[position])
         }
         holder.recipeTime.text = recipe.cookTime
     }

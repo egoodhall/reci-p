@@ -51,7 +51,7 @@ class MyRecipesFragment : Fragment() {
         myRecipes.layoutManager = LinearLayoutManager(activity.applicationContext)
         myRecipes.adapter = LargeRecipeListAdapter(data) { recipe ->
             val intent = Intent(activity.applicationContext, EditorActivity::class.java)
-            // TODO: Launch editor for activity
+            intent.putExtra("recipeId", recipe.id)
             startActivity(intent)
         }
 
