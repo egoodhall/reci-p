@@ -2,6 +2,7 @@ package com.reci_p.reci_p.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
@@ -16,8 +17,6 @@ import com.reci_p.reci_p.adapters.SmallRecipeListAdapter
 import com.reci_p.reci_p.data.Recipe
 import com.reci_p.reci_p.data.User
 import com.reci_p.reci_p.helpers.DataManager
-import com.reci_p.reci_p.helpers.DataManager.Companion.gson
-import com.reci_p.reci_p.helpers.DataManager.Companion.realm
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -40,7 +39,7 @@ class UserProfileActivity : AppCompatActivity() {
         }
 
         // User to be displayed
-        displayedUser = gson.fromJson(intent.getStringExtra("displayUser"), User::class.java)
+        displayedUser = User.parse(intent.getStringExtra("displayUser"))
 
         val profile = findViewById<View>(R.id.activityUserProfile_profileLarge)
 
@@ -87,9 +86,7 @@ class UserProfileActivity : AppCompatActivity() {
 
         // Create a copy of the recipe with a new id and owner
         val saveRecipe = { view: View, pos: Int ->
-            val recipe = realm.copyFromRealm(data[pos])
-            recipe.id = UUID.randomUUID().toString()
-            recipe.owner = uid
+            val recipe = Recipe(FirebaseAuth.getInstance().currentUser!!.uid, UUID.randomUUID().toString(), data[pos])
             DataManager.createRecipe(recipe, {})
         }
 
@@ -99,6 +96,7 @@ class UserProfileActivity : AppCompatActivity() {
 
         // Set adapter
         list.adapter = SmallRecipeListAdapter(data, launchEditor, saveRecipe)
+        list.layoutManager = LinearLayoutManager(applicationContext)
 
         // Populate data
         DataManager.getRecipesForUser(uid) { recipes ->

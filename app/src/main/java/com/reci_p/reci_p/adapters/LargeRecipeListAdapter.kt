@@ -4,48 +4,32 @@ package com.reci_p.reci_p.adapters
  * Created by Laura on 11/17/17.
  */
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
+import com.google.firebase.FirebaseApp
+import com.google.firebase.storage.FirebaseStorage
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
+import com.reci_p.reci_p.helpers.DataManager
 
-import com.google.firebase.storage.FirebaseStorage
-import com.facebook.drawee.view.SimpleDraweeView
-
-class LargeRecipeListAdapter(val mContext: Context, val recipeList: List<Recipe>?) : RecyclerView.Adapter<LargeRecipeListAdapter.CustomViewHolder>() {
+class LargeRecipeListAdapter(val recipeList: List<Recipe>?, onSelect: (recipe: Recipe) -> Unit) : RecyclerView.Adapter<LargeRecipeListAdapter.CustomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LargeRecipeListAdapter.CustomViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.recipe_large, null)
-        //View view = view.findViewById(R.id.recyclerviewRecipes_recyclerview);
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.recipe_large, parent, false)
         return CustomViewHolder(view)
     }
 
-    class CustomViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var image: SimpleDraweeView
-        var recipeTitle: TextView
-        var recipeAuthor: TextView
-        var recipeTime: TextView
-        protected var description: TextView
-        protected var authorLabel: TextView
-        protected var descriptionLabel: TextView
-        protected var timeLabel: TextView
-
-        init {
-            this.image = view.findViewById<View>(R.id.imageView) as SimpleDraweeView
-            this.recipeTitle = view.findViewById<View>(R.id.textView2) as TextView
-            this.recipeAuthor = view.findViewById<View>(R.id.textView3) as TextView
-            this.recipeTime = view.findViewById<View>(R.id.textView5) as TextView
-            this.description = view.findViewById<View>(R.id.textView6) as TextView
-            this.authorLabel = view.findViewById<View>(R.id.textView7) as TextView
-            this.descriptionLabel = view.findViewById<View>(R.id.textView8) as TextView
-            this.timeLabel = view.findViewById<View>(R.id.textView9) as TextView
-        }
+    class CustomViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        var image = view.findViewById<SimpleDraweeView>(R.id.imageView)
+        var recipeTitle = view.findViewById<TextView>(R.id.recipeLarge_title)
+        var recipeAuthor = view.findViewById<TextView>(R.id.recipeLarge_author)
+        var recipeTime = view.findViewById<TextView>(R.id.recipeLarge_time)
     }
 
     override fun onBindViewHolder(holder: LargeRecipeListAdapter.CustomViewHolder, position: Int) {
@@ -54,12 +38,29 @@ class LargeRecipeListAdapter(val mContext: Context, val recipeList: List<Recipe>
 
         //set values in view
         //first get the recipe image from Firebase
-        val urlString = "gs://bucket/" + recipe.photo
-        holder.image.setImageURI(FirebaseStorage.getInstance().getReferenceFromUrl(urlString).downloadUrl.result)
+
+        if (recipe.photo != "") {
+            Log.d("Reci-P", "HERE ${recipe.photo}")
+            val urlString = "gs://${FirebaseApp.getInstance()!!.options!!.storageBucket}/${recipe.photo}"
+            FirebaseStorage.getInstance().getReferenceFromUrl(urlString).downloadUrl.addOnSuccessListener { uri ->
+                Log.d("Reci-P", "URI: ${uri.toString()}")
+                val controller = Fresco.newDraweeControllerBuilder().setUri(uri)
+                holder.image.controller = controller.setOldController(holder.image.controller).build()
+            }.addOnFailureListener { exception ->
+                Log.e("Reci-P", "Error getting URI for image: ${exception.localizedMessage}")
+            }
+        }
 
         //then set the TextViews
         holder.recipeTitle.text = recipe.title
-        holder.recipeAuthor.text = recipe.owner
+        Log.d("Reci-P", "${recipe.owner}")
+        DataManager.getUser(recipe.owner, save = true) { owner ->
+            if (owner != null) {
+                holder.recipeAuthor.text = owner.displayName
+            } else {
+                holder.recipeAuthor.text = ""
+            }
+        }
         holder.recipeTime.text = recipe.cookTime
     }
 

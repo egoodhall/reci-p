@@ -1,7 +1,6 @@
 package com.reci_p.reci_p.data
 
 import com.google.gson.annotations.SerializedName
-import com.reci_p.reci_p.helpers.DataManager.Companion.gson
 import com.reci_p.reci_p.interfaces.Parseable
 import io.realm.RealmList
 import io.realm.RealmObject
@@ -23,12 +22,16 @@ open class User (
 ) : RealmObject() {
     companion object : Parseable<User> {
         override fun json(user: User): String {
-            return gson.toJson(user)
+            val obj = JSONObject()
+            obj.put("photo", user.photo)
+            obj.put("id", user.id)
+            obj.put("username", user.userName)
+            obj.put("displayname", user.displayName)
+            return obj.toString()
         }
 
         override fun parse(json: String): User {
             val obj = JSONObject(json)
-
             return User(
                     obj.getString("photo"),
                     obj.getString("id"),
