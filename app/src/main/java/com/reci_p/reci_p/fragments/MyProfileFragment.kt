@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.activities.LoginActivity
+import com.reci_p.reci_p.activities.UserProfileActivity
 import com.reci_p.reci_p.adapters.FollowingListAdapter
 import com.reci_p.reci_p.data.User
 import com.reci_p.reci_p.helpers.DataManager
@@ -82,7 +83,7 @@ class MyProfileFragment : Fragment() {
                 android.R.color.holo_red_light);
 
         swipeContainer.setOnRefreshListener {
-            DataManager.getFollowing(currentUser.uid) { users ->
+            DataManager.getFollowing(currentUser.uid, refresh = true) { users ->
                 val adapter = followingList.adapter as FollowingListAdapter
                 data.clear()
                 users!!.forEach {
@@ -111,6 +112,9 @@ class MyProfileFragment : Fragment() {
 
         val launchUserProfile = { user: User ->
             // TODO: Launch activity
+            val intent = Intent(activity.applicationContext, UserProfileActivity::class.java)
+            intent.putExtra("displayUser", User.json(user))
+            activity.startActivity(intent)
         }
 
         list.adapter = FollowingListAdapter(data, launchUserProfile, unsubscribeHandler)

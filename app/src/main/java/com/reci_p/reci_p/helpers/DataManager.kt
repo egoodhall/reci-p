@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
 import com.reci_p.reci_p.data.User
@@ -17,7 +16,9 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import org.jetbrains.anko.coroutines.experimental.bg
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import org.json.JSONObject
 import java.net.URLEncoder
 
 /**
@@ -104,6 +105,11 @@ class DataManager {
          * @param cb A callback that receives whether or not the query was successful
          */
         fun unfollow(consumer: String, producer: String, cb: (success: Boolean) -> Unit) {
+
+            realm.executeTransaction {
+                realm.where(User::class.java).equalTo("id", producer).findAll().deleteAllFromRealm()
+            }
+
             val endpoint = resources.getString(R.string.api_base_url).plus("/users/$consumer/follow/$producer")
             var req = Request.Builder()
                     .delete()
@@ -156,9 +162,10 @@ class DataManager {
                     // Save to local
                     if (user != null && save) {
                         realm.executeTransaction {
-                            realm.insert(user)
+                            realm.insertOrUpdate(user)
                         }
                     }
+                    Log.d(endpoint, "Retrieved user")
                     cb(user)
                 }
             }
@@ -172,7 +179,7 @@ class DataManager {
         fun getFollowing(uid: String, refresh: Boolean = false, cb: (users: MutableList<User>?) -> Unit) {
 
             // Try to get following locally
-            val following = realm.where(User::class.java)
+            val following = realm.where(User::class.java).notEqualTo("id", uid)
                     .findAllSorted(arrayOf("displayName", "userName"),
                             arrayOf(Sort.ASCENDING, Sort.ASCENDING)).toMutableList()
 
@@ -182,7 +189,7 @@ class DataManager {
             } else {
                 val endpoint = resources.getString(R.string.api_base_url).plus("/users/$uid/following")
                 var req = Request.Builder().get().url(endpoint).build()
-
+                Log.d("${req.url()}", "Retrieving following from remote")
                 runForListOf<User>(req, User) { users ->
                     // Local update
                     if (users != null) {
@@ -204,17 +211,21 @@ class DataManager {
         fun createRecipe(recipe: Recipe, cb: (recipe: Recipe?) -> Unit) {
             val endpoint = resources.getString(R.string.api_base_url).plus("/recipes")
             var req = Request.Builder()
-                    .post(RequestBody.create(json, gson.toJson(recipe)))
+                    .post(RequestBody.create(json, Recipe.json(recipe)))
                     .url(endpoint).build()
-
-            runForSingle<Recipe>(req, Recipe) { _recipe ->
+            Log.d("Reci-P", "Sending request to ${endpoint}")
+            runForResult(req) { success ->
+                Log.d("Reci-P", "${success}")
                 // Local update
-                if (_recipe != null) {
+                if (success) {
+                    Log.d("Reci-P", "Created Recipe")
                     realm.executeTransaction {
-                        realm.insertOrUpdate(_recipe)
+                        realm.insertOrUpdate(recipe)
                     }
+                    cb(recipe)
+                } else {
+                    cb(null)
                 }
-                cb(_recipe)
             }
         }
 
@@ -282,9 +293,11 @@ class DataManager {
                     .findAllSorted("title", Sort.ASCENDING).toMutableList().toMutableList()
 
             if (!refresh && recipes.size > 0) {
-                realm.insertOrUpdate(recipes)
+                cb(recipes)
             } else {
+                Log.d("${endpoint}", "Retrieving from remote")
                 runForListOf<Recipe>(req, Recipe) { recipes ->
+                    Log.d("Reci-P", "Retrieved ${if (recipes != null) recipes.size else 0} items")
                     if (save && recipes != null) {
                         realm.executeTransaction {
                             realm.insertOrUpdate(recipes)
@@ -337,46 +350,66 @@ class DataManager {
         //=============================//
 
         private inline fun <reified Type> runForListOf(request: Request, parseable: Parseable<Type>, crossinline cb: (result: MutableList<Type>?) -> Unit) {
+            val client = OkHttpClient()
             async(UI) {
-                val d = bg {
-                    val response = client.newCall(request).execute()
-                    response.body()?.string()
 
-                }.await()
+            }
+            doAsync( exceptionHandler = { exception ->
+                Log.e("RUN_FOR_LIST", "${exception.localizedMessage}")
+            }) {
+                val response = client.newCall(request).execute()
+                val d = response.body()?.string()
 
-                Log.d("Reci-P", "$d")
+                Log.d("${request.url()}", "${d}")
 
-                val res = JsonParser().parse(d).asJsonObject
+                val res = JSONObject(d)
 
                 val data = ArrayList<Type>()
-                res.get("data").asJsonArray.forEach { elem ->
-                    val item = gson.fromJson(elem, Type::class.java)
-
+                val jsonData = res.getJSONArray("data")
+                for (idx in 0..jsonData.length()-1) {
+                    val elem = jsonData.getJSONObject(idx)
+                    val item = parseable.parse(elem.toString())
+                    if (item is User) Log.d("${request.url()}", "elem: ${item.userName}")
+                    if (item is Recipe) Log.d("${request.url()}", "elem: ${item.id}")
                     data.add(item)
                 }
-                cb(if (res.get("success").asBoolean) data else null)
+                Log.d("${request.url()}", "data: ${data.size}")
+                uiThread {
+                    cb(data)
+                }
             }
         }
 
         private inline fun <reified Type> runForSingle(request: Request, parseable: Parseable<Type>, crossinline cb: (result: Type?) -> Unit) {
-            async(UI) {
-                val res = bg {
-                    val response = client.newCall(request).execute()
-                    JsonParser().parse(response.body()?.string()).asJsonObject
-                }.await()
-                val data = parseable.parse(res.get("data").asString)
-                cb(if (res.get("success").asBoolean) data else null)
+            doAsync(exceptionHandler = { exception ->
+                Log.e("${request.url()}", "${exception.localizedMessage}")
+            }) {
+                val response = client.newCall(request).execute()
+                val d = response.body()?.string()
+                Log.d("${request.url()}", "Received: ${d}")
+                val res = JSONObject(d)
+                val data = parseable.parse(res.getString("data"))
+//                Log.d("Reci-P", "${res.get("data").asBoolean}")
+                uiThread {
+                    cb(if (res.getBoolean("success")) data else null)
+                }
             }
         }
 
         private inline fun runForResult(request: Request, crossinline cb: (result: Boolean) -> Unit) {
-            async(UI) {
-                val res = bg {
-                    val response = client.newCall(request).execute()
-                    JsonParser().parse(response.body()?.string()).asJsonObject
-                }.await()
+            Log.d("${request.url()}", "Posting for result")
+            doAsync(exceptionHandler = { exception ->
+                Log.e("RUN_FOR_RESULT", "${exception.localizedMessage}")
+            }) {
+                val response = client.newCall(request).execute()
+                val d = response.body()?.string()
 
-                cb(res.get("success").asBoolean)
+                Log.d("${request.url()}", "Received: ${d}")
+
+                val res = JSONObject(d)
+                uiThread {
+                    cb(res.getBoolean("success"))
+                }
             }
         }
 

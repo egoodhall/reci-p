@@ -226,7 +226,7 @@ class EditorActivity : AppCompatActivity() {
         }
         setRecipeFromView()
         recipeModel.modifiedTS = Date().time
-        recipeModel.owner = FirebaseAuth.getInstance().currentUser.toString()
+        recipeModel.owner = FirebaseAuth.getInstance().currentUser!!.uid
 
         DataManager.createRecipe(recipeModel, {
             recipe ->
