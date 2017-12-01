@@ -48,8 +48,17 @@ class EditorActivity : AppCompatActivity() {
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check()
+        if (this.intent.hasExtra("recipeId")) {
+            DataManager.getRecipe(this.intent.getStringExtra("recipeId"), { recipe ->
+                if (recipe != null) {
+                    this.recipeModel = recipe
+                    setRecipeView()
+                }
+            })
+        }
 
         setRecipeView()
+
 
     }
 
@@ -228,15 +237,14 @@ class EditorActivity : AppCompatActivity() {
         recipeModel.modifiedTS = Date().time
         recipeModel.owner = FirebaseAuth.getInstance().currentUser!!.uid
 
-        DataManager.createRecipe(recipeModel, {
-            recipe ->
-            if (recipe != null) {
-                Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()
-            }
-        })
-        Toast.makeText(this@EditorActivity, "Recipe creation attempted", Toast.LENGTH_SHORT).show()
+            DataManager.createRecipe(recipeModel, { recipe ->
+                if (recipe != null) {
+                    Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()
+                }
+            })
+        finish()
     }
 
 }
