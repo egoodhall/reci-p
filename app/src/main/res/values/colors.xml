@@ -8,4 +8,5 @@
     <color name="secondaryDarkColor">#5c007a</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
+    <color name="emptyImgBgdColor">#ededed</color>
 </resources>

@@ -3,12 +3,15 @@ package com.reci_p.reci_p.activities
 import android.Manifest
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.*
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.gun0912.tedpermission.PermissionListener
@@ -125,11 +128,16 @@ class EditorActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.recipePrepTime).setText(recipeModel.prepTime)
         findViewById<EditText>(R.id.recipeCookTime).setText(recipeModel.cookTime)
         findViewById<EditText>(R.id.recipeCookTime).setText(recipeModel.cookTime)
-        if (!recipeModel.photo.isEmpty()) {
-            val storage = FirebaseStorage.getInstance()
-            val storageRef = storage.reference.child(recipeModel.photo)
-            storageRef.downloadUrl.addOnCompleteListener { uri ->
-                (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(uri.result, this@EditorActivity)
+        if (recipeModel.photo != "" && recipeModel.photo != null) {
+            Log.d("Reci-P", "HERE ${recipeModel.photo}")
+            val urlString = "gs://${FirebaseApp.getInstance()!!.options!!.storageBucket}/${recipeModel.photo}"
+            FirebaseStorage.getInstance().getReferenceFromUrl(urlString).downloadUrl.addOnSuccessListener { uri ->
+                Log.d("Reci-P", "URI: ${uri.toString()}")
+                val controller = Fresco.newDraweeControllerBuilder().setUri(uri)
+                val imgView = findViewById<SimpleDraweeView>(R.id.app_bar_image)
+                imgView.controller = controller.setOldController(imgView.controller).build()
+            }.addOnFailureListener { exception ->
+                Log.e("Reci-P", "Error getting URI for image: ${exception.localizedMessage}")
             }
         }
         findViewById<RatingBar>(R.id.recipeRating).rating = recipeModel.rating
@@ -210,7 +218,9 @@ class EditorActivity : AppCompatActivity() {
                     }).addOnSuccessListener({ taskSnapshot ->
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                         val downloadUrl = taskSnapshot.downloadUrl
-                        recipeModel.photo = photo
+                        realm.executeTransaction {
+                            recipeModel.photo = photo
+                        }
                         Toast.makeText(this@EditorActivity, "Upload successful, URL: " + downloadUrl, Toast.LENGTH_SHORT).show()
                         uploadStatus = false
                     })
