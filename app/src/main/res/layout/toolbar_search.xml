@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/searchToolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primaryColor"
+    android:descendantFocusability="beforeDescendants"
+    android:elevation="4dp"
+    android:focusableInTouchMode="true">
+
+    <EditText
+        android:id="@+id/toolbarSearch_editText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/searchPrompt"
+        android:imeOptions="actionSearch"
+        android:inputType="textCapWords"
+        android:textColor="@android:color/background_light"
+        android:theme="@style/SearchBarTheme"/>
+
+</android.support.v7.widget.Toolbar>

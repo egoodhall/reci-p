@@ -230,30 +230,6 @@ class DataManager {
         }
 
         /**
-         * Updates the recipe in the backend whose id matches the one passed to the function. The
-         * other values in the recipe are updated
-         *
-         * @param recipe A populated recipe object to update the values for
-         * @param cb A callback that receives the updated recipe object
-         */
-        fun updateRecipe(recipe: Recipe, cb: (recipe: Recipe?) -> Unit) {
-            val endpoint = resources.getString(R.string.api_base_url).plus("/recipes")
-            var req = Request.Builder()
-                    .put(RequestBody.create(json, gson.toJson(recipe)))
-                    .url(endpoint).build()
-
-            runForSingle<Recipe>(req, Recipe) { _recipe ->
-                // Local update
-                if (_recipe != null) {
-                    realm.executeTransaction {
-                        realm.insertOrUpdate(_recipe)
-                    }
-                }
-                cb(_recipe)
-            }
-        }
-
-        /**
          * Delete a recipe from the backend
          *
          * @param id The id of the recipe to remove from the system
