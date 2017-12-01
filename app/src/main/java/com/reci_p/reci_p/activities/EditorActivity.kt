@@ -31,9 +31,8 @@ class EditorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editor)
 
-        val permissionlistener = object : PermissionListener {
+        val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
-                Toast.makeText(this@EditorActivity, "Permission Granted", Toast.LENGTH_SHORT).show()
             }
 
             override fun onPermissionDenied(deniedPermissions: ArrayList<String>) {
@@ -44,12 +43,21 @@ class EditorActivity : AppCompatActivity() {
         }
 
         TedPermission.with(this)
-                .setPermissionListener(permissionlistener)
+                .setPermissionListener(permissionListener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check()
+        if (this.intent.hasExtra("recipeId")) {
+            DataManager.getRecipe(this.intent.getStringExtra("recipeId"), { recipe ->
+                if (recipe != null) {
+                    this.recipeModel = recipe
+                    setRecipeView()
+                }
+            })
+        }
 
         setRecipeView()
+
 
     }
 
@@ -58,7 +66,7 @@ class EditorActivity : AppCompatActivity() {
         updateRecipeView()
     }
 
-    fun removeIngredient(v: View) {
+    private fun removeIngredient(v: View) {
         val linLayout = findViewById<LinearLayout>(R.id.ingredientHolder)
         val ingr = v.findViewById<TextView>(R.id.ingredient_text).text.toString()
         val newIngredients = recipeModel.ingredients.toMutableList()
@@ -87,7 +95,7 @@ class EditorActivity : AppCompatActivity() {
         updateRecipeView()
     }
 
-    fun removeInstruction(v: View) {
+    private fun removeInstruction(v: View) {
         val linLayout = findViewById<LinearLayout>(R.id.instructionHolder)
         val ingr = v.findViewById<TextView>(R.id.instruction_text).text.toString()
         val newInstructions = recipeModel.instructions.toMutableList()
@@ -110,7 +118,7 @@ class EditorActivity : AppCompatActivity() {
         })
     }
 
-    fun setRecipeView() {
+    private fun setRecipeView() {
         findViewById<EditText>(R.id.recipeTitle).setText(recipeModel.title)
         findViewById<EditText>(R.id.recipeDesc).setText(recipeModel.description)
         findViewById<EditText>(R.id.recipePrepTime).setText(recipeModel.prepTime)
@@ -150,7 +158,7 @@ class EditorActivity : AppCompatActivity() {
 
     }
 
-    fun updateRecipeView() {
+    private fun updateRecipeView() {
         findViewById<LinearLayout>(R.id.ingredientHolder).removeAllViews()
         recipeModel.ingredients.forEach { ingr ->
             if (!ingr.isEmpty()) {
@@ -210,7 +218,7 @@ class EditorActivity : AppCompatActivity() {
         tedBottomPicker.show(supportFragmentManager)
     }
 
-    fun setRecipeFromView() {
+    private fun setRecipeFromView() {
         recipeModel.title = (findViewById<EditText>(R.id.recipeTitle)).text.toString()
         recipeModel.description = (findViewById<EditText>(R.id.recipeDesc)).text.toString()
         recipeModel.prepTime = (findViewById<EditText>(R.id.recipePrepTime)).text.toString()
@@ -228,15 +236,14 @@ class EditorActivity : AppCompatActivity() {
         recipeModel.modifiedTS = Date().time
         recipeModel.owner = FirebaseAuth.getInstance().currentUser!!.uid
 
-        DataManager.createRecipe(recipeModel, {
-            recipe ->
-            if (recipe != null) {
-                Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()
-            }
-        })
-        Toast.makeText(this@EditorActivity, "Recipe creation attempted", Toast.LENGTH_SHORT).show()
+            DataManager.createRecipe(recipeModel, { recipe ->
+                if (recipe != null) {
+                    Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()
+                }
+            })
+        finish()
     }
 
 }
