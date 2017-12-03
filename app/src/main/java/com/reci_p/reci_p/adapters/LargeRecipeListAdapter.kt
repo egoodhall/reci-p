@@ -40,10 +40,8 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recip
         //first get the recipe image from Firebase
 
         if (recipe.photo != "") {
-            Log.d("Reci-P", "HERE ${recipe.photo}")
             val urlString = "gs://${FirebaseApp.getInstance()!!.options!!.storageBucket}/${recipe.photo}"
             FirebaseStorage.getInstance().getReferenceFromUrl(urlString).downloadUrl.addOnSuccessListener { uri ->
-                Log.d("Reci-P", "URI: ${uri.toString()}")
                 val controller = Fresco.newDraweeControllerBuilder().setUri(uri)
                 holder.image.controller = controller.setOldController(holder.image.controller).build()
             }.addOnFailureListener { exception ->
@@ -53,7 +51,6 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recip
 
         //then set the TextViews
         holder.recipeTitle.text = recipe.title
-        Log.d("Reci-P", "${recipe.owner}")
         DataManager.getUser(recipe.owner, save = true) { owner ->
             if (owner != null) {
                 holder.recipeAuthor.text = owner.displayName

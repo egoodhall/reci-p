@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +15,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.activities.EditorActivity
+import com.reci_p.reci_p.activities.SearchActivity
 import com.reci_p.reci_p.adapters.LargeRecipeListAdapter
 import com.reci_p.reci_p.data.Recipe
 import com.reci_p.reci_p.helpers.DataManager
+import com.reci_p.reci_p.helpers.RecipeDiffCb
 import io.realm.RealmList
 
 /**
@@ -34,11 +36,13 @@ class RecipeFeedFragment : Fragment() {
 
     val data = RealmList<Recipe>()
 
+    var page = 0
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         activity.title = getString(R.string.title_my_recipes)
-        val view = inflater?.inflate(R.layout.fragment_my_recipes, container, false)
-        view!!.findViewById<FloatingActionButton>(R.id.fragmentMyRecipes_FAB).setOnClickListener {
-            val intent = Intent(activity.applicationContext, EditorActivity::class.java)
+        val view = inflater?.inflate(R.layout.fragment_recipe_feed, container, false)
+        view!!.findViewById<FloatingActionButton>(R.id.fragmentRecipeFeed_FAB).setOnClickListener {
+            val intent = Intent(activity.applicationContext, SearchActivity::class.java)
             startActivity(intent)
         }
 
@@ -52,21 +56,35 @@ class RecipeFeedFragment : Fragment() {
         myRecipes.adapter = LargeRecipeListAdapter(data) { recipe ->
             val intent = Intent(activity.applicationContext, EditorActivity::class.java)
             intent.putExtra("recipeId", recipe.id)
+            intent.putExtra("disableInteraction", true)
             startActivity(intent)
-        }
-
-        DataManager.getFeed(currentUser.uid) { recipes ->
-            if (recipes != null) {
-                data.clear()
-                data.addAll(recipes)
-                myRecipes.adapter.notifyDataSetChanged()
-            }
         }
 
         val swipeContainer = view.findViewById<SwipeRefreshLayout>(R.id.recyclerviewRecipes_swipeRefreshLayout)
         setupSwipeContainer(swipeContainer)
+        swipeContainer.post {
+            swipeContainer.isRefreshing = true
+            updateDataSet {
+                swipeContainer.isRefreshing = false
+            }
+        }
 
         return view
+    }
+
+    fun updateDataSet(cb: (() -> Unit)? = null) {
+        page = 0
+        DataManager.getFeed(currentUser.uid, page = page) { recipes ->
+            if (recipes != null) {
+                data.clear()
+                data.addAll(recipes)
+                val diff = DiffUtil.calculateDiff(RecipeDiffCb(data, recipes))
+                diff.dispatchUpdatesTo(myRecipes.adapter)
+            }
+            if (cb != null) {
+                cb()
+            }
+        }
     }
 
     private fun setupSwipeContainer(swipeContainer: SwipeRefreshLayout) {
@@ -78,15 +96,7 @@ class RecipeFeedFragment : Fragment() {
                 android.R.color.holo_red_light);
 
         swipeContainer.setOnRefreshListener {
-            DataManager.getFeed(currentUser.uid) { recipes ->
-                Log.d("Reci-P", "Done")
-                val adapter = myRecipes.adapter as LargeRecipeListAdapter
-                if (recipes != null) {
-                    data.clear()
-                    data.addAll(recipes)
-                    adapter.notifyDataSetChanged()
-                }
-                Log.d("Reci-P", "${data.size}")
+            updateDataSet {
                 swipeContainer.isRefreshing = false
             }
         }

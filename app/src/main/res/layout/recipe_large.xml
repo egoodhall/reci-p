@@ -35,12 +35,13 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                fresco:actualImageResource="@drawable/ic_photo_icon"
+                fresco:actualImageResource="@drawable/ic_recipe_default"
                 fresco:backgroundImage="@color/emptyImgBgdColor"
-                fresco:failureImage="@drawable/ic_photo_icon"
-                fresco:failureImageScaleType="center"
-                fresco:placeholderImage="@drawable/ic_photo_icon"
-                app:placeholderImageScaleType="center"/>
+                fresco:failureImage="@drawable/ic_recipe_default"
+                fresco:failureImageScaleType="fitXY"
+                fresco:placeholderImage="@drawable/ic_recipe_default"
+                fresco:placeholderImageScaleType="fitXY"
+                />
 
             <TextView
                 android:id="@+id/recipeLarge_title"

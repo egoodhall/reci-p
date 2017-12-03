@@ -1,5 +1,6 @@
 package com.reci_p.reci_p.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
@@ -118,7 +119,9 @@ class UserProfileActivity : AppCompatActivity() {
         }
 
         val launchEditor = { recipe: Recipe ->
-            // TODO: Launch activity
+            val intent = Intent(applicationContext, EditorActivity::class.java)
+            intent.putExtra("recipeId", recipe.id)
+            startActivity(intent)
         }
 
         // Set adapter
