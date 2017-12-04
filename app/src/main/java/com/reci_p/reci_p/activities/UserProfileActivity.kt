@@ -1,6 +1,8 @@
 package com.reci_p.reci_p.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -66,6 +68,9 @@ class UserProfileActivity : AppCompatActivity() {
         profile.findViewById<TextView>(R.id.profileLarge_title).text = "Recipes:"
         recipeList = findViewById<RecyclerView>(R.id.activityUserProfile_recipesList)
         populateRecipeList(displayedUser.id, recipeList)
+
+        val swipeContainer = findViewById<SwipeRefreshLayout>(R.id.activityUserProfile_swipeRefreshLayout)
+        setupSwipeContainer(swipeContainer)
     }
 
     fun toggleFollowing(view: View) {
@@ -81,6 +86,29 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupSwipeContainer(swipeContainer: SwipeRefreshLayout) {
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        swipeContainer.setOnRefreshListener {
+            DataManager.getRecipesForUser(displayedUser.id, save = true, refresh = true) { recipes ->
+                Log.d("Reci-P", "Done")
+                val adapter = recipeList.adapter as SmallRecipeListAdapter
+                if (recipes != null) {
+                    data.clear()
+                    data.addAll(recipes)
+                    adapter.notifyDataSetChanged()
+                }
+                Log.d("Reci-P", "${data.size}")
+                swipeContainer.isRefreshing = false
+            }
+        }
+    }
+
     fun populateRecipeList(uid: String, list: RecyclerView) {
         data = ArrayList()
 
@@ -91,7 +119,10 @@ class UserProfileActivity : AppCompatActivity() {
         }
 
         val launchEditor = { recipe: Recipe ->
-            // TODO: Launch activity
+            val intent = Intent(applicationContext, EditorActivity::class.java)
+            intent.putExtra("recipeId", recipe.id)
+            intent.putExtra("view", 1)
+            startActivity(intent)
         }
 
         // Set adapter

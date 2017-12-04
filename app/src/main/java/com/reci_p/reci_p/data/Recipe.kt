@@ -2,11 +2,11 @@ package com.reci_p.reci_p.data
 
 import android.util.Log
 import com.google.gson.annotations.SerializedName
-import com.reci_p.reci_p.helpers.DataManager.Companion.gson
 import com.reci_p.reci_p.interfaces.Parseable
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 
@@ -50,7 +50,31 @@ open class Recipe (
     companion object : Parseable<Recipe> {
 
         override fun json(recipe: Recipe): String {
-            return gson.toJson(recipe)
+            val obj = JSONObject()
+            obj.put("title", recipe.title)
+            obj.put("description", recipe.description)
+            obj.put("prep_time", recipe.prepTime)
+            obj.put("cook_time", recipe.cookTime)
+
+            var arr = JSONArray()
+            recipe.ingredients.forEach { ingr ->
+                arr.put(ingr)
+            }
+            obj.put("ingredients", arr)
+
+            recipe.instructions.forEach { instr ->
+                arr.put(instr)
+            }
+            obj.put("instructions", arr)
+
+            obj.put("photo", recipe.photo)
+            obj.put("id", recipe.id)
+            obj.put("creator", recipe.creator)
+            obj.put("owner", recipe.owner)
+            obj.put("creation_ts", recipe.creationTS)
+            obj.put("modification_ts", recipe.modifiedTS)
+            obj.put("rating", recipe.rating)
+            return obj.toString()
         }
 
         override fun parse(json: String): Recipe {
@@ -63,20 +87,17 @@ open class Recipe (
             if (obj.getString("cook_time") != null) recipe.cookTime = obj.getString("cook_time") else ""
 
             if (obj.has("ingredients")) {
-                Log.d("BETWEEN", "A")
-                Log.d("INGREDIENTS", "${obj["ingredients"]}")
-                Log.d("BETWEEN", "B")
-//                val ingr = JSONArray(obj.getString("ingredients"))
-//                for (idx in 0..ingr.length()-1) {
-//                    recipe.ingredients.add(ingr.getString(idx))
-//                }
+                val ingr = JSONArray(obj.getString("ingredients"))
+                for (idx in 0..ingr.length()-1) {
+                    recipe.ingredients.add(ingr.getString(idx))
+                }
             }
             if (obj.has("instructions")) {
-                Log.d("INSTRUCTIONS", "${obj["instructions"]}")
-//                val instr = JSONArray(obj.getString("instructions"))
-//                for (idx in 0..instr.length()-1) {
-//                    recipe.ingredients.add(instr.getString(idx))
-//                }
+//                Log.d("INSTRUCTIONS", "${obj["instructions"]}")
+                val instr = JSONArray(obj.getString("instructions"))
+                for (idx in 0..instr.length()-1) {
+                    recipe.ingredients.add(instr.getString(idx))
+                }
             }
             if (obj.getString("photo") != null) recipe.photo = obj.getString("photo") else ""
             if (obj.getString("id") != null) recipe.id = obj.getString("id") else ""

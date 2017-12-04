@@ -1,23 +1,22 @@
 package com.reci_p.reci_p.activities
 
-import android.support.v7.app.AppCompatActivity
+//import android.support.v7.widget.Toolbar
 import android.os.Bundle
-import com.reci_p.reci_p.R
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentTransaction
-//import android.support.v7.widget.Toolbar
+import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.reci_p.reci_p.R
+import com.reci_p.reci_p.adapters.ViewPagerAdapter
+import com.reci_p.reci_p.extension.active
+import com.reci_p.reci_p.extension.disableShiftMode
 import com.reci_p.reci_p.fragments.MyProfileFragment
 import com.reci_p.reci_p.fragments.MyRecipesFragment
 import com.reci_p.reci_p.fragments.RecipeFeedFragment
-import com.reci_p.reci_p.adapters.ViewPagerAdapter
 import com.reci_p.reci_p.helpers.BottomNavHelper
 import com.reci_p.reci_p.helpers.BottomNavPosition
-import com.reci_p.reci_p.extension.*
-import android.support.v4.view.ViewPager
-import android.support.annotation.NonNull
 
 
 
@@ -100,7 +99,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         adapter.addFragment(profileFrag)
         adapter.addFragment(feedFrag)
         viewPager.adapter = adapter
-        viewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
 
             }

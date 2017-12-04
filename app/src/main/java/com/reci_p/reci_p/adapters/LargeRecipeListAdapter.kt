@@ -18,7 +18,7 @@ import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
 import com.reci_p.reci_p.helpers.DataManager
 
-class LargeRecipeListAdapter(val recipeList: List<Recipe>?, onSelect: (recipe: Recipe) -> Unit) : RecyclerView.Adapter<LargeRecipeListAdapter.CustomViewHolder>() {
+class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recipe: Recipe) -> Unit) : RecyclerView.Adapter<LargeRecipeListAdapter.CustomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LargeRecipeListAdapter.CustomViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recipe_large, parent, false)
@@ -40,10 +40,8 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, onSelect: (recipe: R
         //first get the recipe image from Firebase
 
         if (recipe.photo != "") {
-            Log.d("Reci-P", "HERE ${recipe.photo}")
             val urlString = "gs://${FirebaseApp.getInstance()!!.options!!.storageBucket}/${recipe.photo}"
             FirebaseStorage.getInstance().getReferenceFromUrl(urlString).downloadUrl.addOnSuccessListener { uri ->
-                Log.d("Reci-P", "URI: ${uri.toString()}")
                 val controller = Fresco.newDraweeControllerBuilder().setUri(uri)
                 holder.image.controller = controller.setOldController(holder.image.controller).build()
             }.addOnFailureListener { exception ->
@@ -53,13 +51,15 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, onSelect: (recipe: R
 
         //then set the TextViews
         holder.recipeTitle.text = recipe.title
-        Log.d("Reci-P", "${recipe.owner}")
         DataManager.getUser(recipe.owner, save = true) { owner ->
             if (owner != null) {
                 holder.recipeAuthor.text = owner.displayName
             } else {
                 holder.recipeAuthor.text = ""
             }
+        }
+        holder.view.setOnClickListener {
+            onSelect(recipeList[position])
         }
         holder.recipeTime.text = recipe.cookTime
     }
