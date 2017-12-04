@@ -3,12 +3,15 @@ package com.reci_p.reci_p.activities
 import android.Manifest
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.*
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.gun0912.tedpermission.PermissionListener
@@ -16,6 +19,7 @@ import com.gun0912.tedpermission.TedPermission
 import com.reci_p.reci_p.R
 import com.reci_p.reci_p.data.Recipe
 import com.reci_p.reci_p.helpers.DataManager
+import com.reci_p.reci_p.helpers.DataManager.Companion.realm
 import gun0912.tedbottompicker.TedBottomPicker
 import io.realm.RealmList
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
@@ -31,19 +35,19 @@ class EditorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editor)
 
-        val permissionListener = object : PermissionListener {
+        val permissionlistener = object : PermissionListener {
             override fun onPermissionGranted() {
             }
 
             override fun onPermissionDenied(deniedPermissions: ArrayList<String>) {
-                Toast.makeText(this@EditorActivity, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show()
             }
 
 
         }
 
         TedPermission.with(this)
-                .setPermissionListener(permissionListener)
+                .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check()
@@ -124,10 +128,17 @@ class EditorActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.recipePrepTime).setText(recipeModel.prepTime)
         findViewById<EditText>(R.id.recipeCookTime).setText(recipeModel.cookTime)
         findViewById<EditText>(R.id.recipeCookTime).setText(recipeModel.cookTime)
-        if (!recipeModel.photo.isEmpty()) {
-            val storage = FirebaseStorage.getInstance()
-            val storageRef = storage.reference.child(recipeModel.photo)
-            (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(storageRef.downloadUrl.result, this@EditorActivity)
+        if (recipeModel.photo != "" && recipeModel.photo != null) {
+            Log.d("Reci-P", "HERE ${recipeModel.photo}")
+            val urlString = "gs://${FirebaseApp.getInstance()!!.options!!.storageBucket}/${recipeModel.photo}"
+            FirebaseStorage.getInstance().getReferenceFromUrl(urlString).downloadUrl.addOnSuccessListener { uri ->
+                Log.d("Reci-P", "URI: ${uri.toString()}")
+                val controller = Fresco.newDraweeControllerBuilder().setUri(uri)
+                val imgView = findViewById<SimpleDraweeView>(R.id.app_bar_image)
+                imgView.controller = controller.setOldController(imgView.controller).build()
+            }.addOnFailureListener { exception ->
+                Log.e("Reci-P", "Error getting URI for image: ${exception.localizedMessage}")
+            }
         }
         findViewById<RatingBar>(R.id.recipeRating).rating = recipeModel.rating
 
@@ -207,7 +218,9 @@ class EditorActivity : AppCompatActivity() {
                     }).addOnSuccessListener({ taskSnapshot ->
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                         val downloadUrl = taskSnapshot.downloadUrl
-                        recipeModel.photo = photo
+                        realm.executeTransaction {
+                            recipeModel.photo = photo
+                        }
                         Toast.makeText(this@EditorActivity, "Upload successful, URL: " + downloadUrl, Toast.LENGTH_SHORT).show()
                         uploadStatus = false
                     })
@@ -219,12 +232,13 @@ class EditorActivity : AppCompatActivity() {
     }
 
     private fun setRecipeFromView() {
-        recipeModel.title = (findViewById<EditText>(R.id.recipeTitle)).text.toString()
-        recipeModel.description = (findViewById<EditText>(R.id.recipeDesc)).text.toString()
-        recipeModel.prepTime = (findViewById<EditText>(R.id.recipePrepTime)).text.toString()
-        recipeModel.cookTime = (findViewById<EditText>(R.id.recipeCookTime)).text.toString()
-        recipeModel.rating = findViewById<RatingBar>(R.id.recipeRating).rating
-
+        realm.executeTransaction {
+            recipeModel.title = (findViewById<EditText>(R.id.recipeTitle)).text.toString()
+            recipeModel.description = (findViewById<EditText>(R.id.recipeDesc)).text.toString()
+            recipeModel.prepTime = (findViewById<EditText>(R.id.recipePrepTime)).text.toString()
+            recipeModel.cookTime = (findViewById<EditText>(R.id.recipeCookTime)).text.toString()
+            recipeModel.rating = findViewById<RatingBar>(R.id.recipeRating).rating
+        }
     }
 
     fun saveRecipe(v: View) {
@@ -233,8 +247,10 @@ class EditorActivity : AppCompatActivity() {
             return
         }
         setRecipeFromView()
-        recipeModel.modifiedTS = Date().time
-        recipeModel.owner = FirebaseAuth.getInstance().currentUser!!.uid
+        realm.executeTransaction {
+            recipeModel.modifiedTS = Date().time
+            recipeModel.owner = FirebaseAuth.getInstance().currentUser!!.uid
+        }
 
             DataManager.createRecipe(recipeModel, { recipe ->
                 if (recipe != null) {

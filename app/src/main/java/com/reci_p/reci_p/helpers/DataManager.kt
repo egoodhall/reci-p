@@ -132,11 +132,11 @@ class DataManager {
          */
         fun searchUsers(own: String, query: String, page: Int = 0, cb: (users: MutableList<User>?) -> Unit) {
             val endpoint = resources.getString(R.string.api_base_url)
-                .plus("/users/search/${URLEncoder.encode(query, "UTF-8")}&ignore=$own&page=$page")
+                .plus("/users/search/${URLEncoder.encode(query, "UTF-8")}?ignore=${own}&page=${page}")
             var req = Request.Builder()
                     .get()
                     .url(endpoint).build()
-
+            Log.d("${endpoint}", "Searching for users with query ${query}")
             runForListOf<User>(req, User, cb)
         }
 
@@ -191,7 +191,7 @@ class DataManager {
                 var req = Request.Builder().get().url(endpoint).build()
                 Log.d("${req.url()}", "Retrieving following from remote")
                 runForListOf<User>(req, User) { users ->
-                    // Local update
+                    // Local active
                     if (users != null) {
                         realm.executeTransaction {
                             realm.insertOrUpdate(users)
@@ -216,7 +216,7 @@ class DataManager {
             Log.d("Reci-P", "Sending request to ${endpoint}")
             runForResult(req) { success ->
                 Log.d("Reci-P", "${success}")
-                // Local update
+                // Local active
                 if (success) {
                     Log.d("Reci-P", "Created Recipe")
                     realm.executeTransaction {
@@ -271,9 +271,7 @@ class DataManager {
             if (!refresh && recipes.size > 0) {
                 cb(recipes)
             } else {
-                Log.d("${endpoint}", "Retrieving from remote")
                 runForListOf<Recipe>(req, Recipe) { recipes ->
-                    Log.d("Reci-P", "Retrieved ${if (recipes != null) recipes.size else 0} items")
                     if (save && recipes != null) {
                         realm.executeTransaction {
                             realm.insertOrUpdate(recipes)
@@ -336,8 +334,6 @@ class DataManager {
                 val response = client.newCall(request).execute()
                 val d = response.body()?.string()
 
-                Log.d("${request.url()}", "${d}")
-
                 val res = JSONObject(d)
 
                 val data = ArrayList<Type>()
@@ -345,8 +341,6 @@ class DataManager {
                 for (idx in 0..jsonData.length()-1) {
                     val elem = jsonData.getJSONObject(idx)
                     val item = parseable.parse(elem.toString())
-                    if (item is User) Log.d("${request.url()}", "elem: ${item.userName}")
-                    if (item is Recipe) Log.d("${request.url()}", "elem: ${item.id}")
                     data.add(item)
                 }
                 Log.d("${request.url()}", "data: ${data.size}")
@@ -365,7 +359,6 @@ class DataManager {
                 Log.d("${request.url()}", "Received: ${d}")
                 val res = JSONObject(d)
                 val data = parseable.parse(res.getString("data"))
-//                Log.d("Reci-P", "${res.get("data").asBoolean}")
                 uiThread {
                     cb(if (res.getBoolean("success")) data else null)
                 }
