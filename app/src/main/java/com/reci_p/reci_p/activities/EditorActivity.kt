@@ -263,6 +263,8 @@ class EditorActivity : AppCompatActivity() {
     }
 
     fun saveRecipe(v: View) {
+        val fabProgress = findViewById<FABProgressCircle>(R.id.fabProgressCircle_save)
+        fabProgress.show()
         if (uploadStatus) {
             Toast.makeText(this@EditorActivity, "Please wait for image upload to finish before saving.", Toast.LENGTH_SHORT).show()
             return
@@ -275,12 +277,13 @@ class EditorActivity : AppCompatActivity() {
 
             DataManager.createRecipe(recipeModel, { recipe ->
                 if (recipe != null) {
-                    Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@EditorActivity, "Recipe creation successful!", Toast.LENGTH_SHORT).show()
+                    finish()
                 } else {
                     Toast.makeText(this@EditorActivity, "Recipe creation unsuccessful!", Toast.LENGTH_SHORT).show()
+                    fabProgress.hide()
                 }
             })
-        finish()
     }
 
 }

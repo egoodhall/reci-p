@@ -225,14 +225,32 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/save_fab"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:onClick="saveRecipe"
-        android:src="@drawable/ic_save"
         app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|left|end" />
+        app:layout_anchorGravity="bottom|left|end"
+        android:layout_height="wrap_content">
+
+        <com.github.jorgecastilloprz.FABProgressCircle
+            android:id="@+id/fabProgressCircle_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:reusable="true"
+            >
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/save_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:onClick="saveRecipe"
+                android:src="@drawable/ic_save"
+                app:layout_anchor="@id/appbar"
+                app:layout_anchorGravity="bottom|left|end" />
+
+        </com.github.jorgecastilloprz.FABProgressCircle>
+
+    </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>
