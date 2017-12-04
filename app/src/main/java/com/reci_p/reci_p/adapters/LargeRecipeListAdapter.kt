@@ -60,6 +60,7 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recip
         //set values in view
         //first get the recipe image from Firebase
 
+        holder.image.setImageURI("")
         if (recipe.photo != "") {
             val urlString = "gs://${FirebaseApp.getInstance()!!.options!!.storageBucket}/${recipe.photo}"
             FirebaseStorage.getInstance().getReferenceFromUrl(urlString).downloadUrl.addOnSuccessListener { uri ->
@@ -92,12 +93,14 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recip
         holder.cookTimeUnfold.text = recipe.cookTime
         holder.prepTimeUnfold.text = recipe.prepTime
 
+        holder.ingredientHolderUnfold.removeAllViews()
         for (i in recipe.ingredients) {
             val view = LayoutInflater.from(holder.view.context).inflate(R.layout.ingredient, null)
             view.findViewById<TextView>(R.id.ingredient_text).text = i
             holder.ingredientHolderUnfold.addView(view)
         }
 
+        holder.instructionHolderUnfold.removeAllViews()
         for (i in recipe.instructions) {
             val view = LayoutInflater.from(holder.view.context).inflate(R.layout.instruction, null)
             view.findViewById<TextView>(R.id.instruction_text).text = i
