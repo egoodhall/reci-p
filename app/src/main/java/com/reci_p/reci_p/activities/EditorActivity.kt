@@ -76,16 +76,12 @@ class EditorActivity : AppCompatActivity() {
             findViewById<Button>(R.id.add_ingredient_button).isEnabled = false
 //            findViewById<FloatingActionButton>(R.id.image_fab).isEnabled = false
 //            findViewById<FloatingActionButton>(R.id.save_fab).isEnabled = false
-            if (recipeModel.owner == FirebaseAuth.getInstance().currentUser!!.uid) {
-                val editFab = findViewById<FloatingActionButton>(R.id.image_fab)
-                editFab.imageResource = R.drawable.ic_action_edit
-                editFab.setOnClickListener {
-                    val intent = Intent(applicationContext, EditorActivity::class.java)
-                    intent.putExtra("recipeId", this.intent.getStringExtra("recipeId"))
-                    startActivity(intent)
-                }
-            } else {
-                findViewById<FloatingActionButton>(R.id.image_fab).visibility = View.GONE
+            val editFab = findViewById<FloatingActionButton>(R.id.image_fab)
+            editFab.imageResource = R.drawable.ic_action_edit
+            editFab.setOnClickListener {
+                val intent = Intent(applicationContext, EditorActivity::class.java)
+                intent.putExtra("recipeId", this.intent.getStringExtra("recipeId"))
+                startActivity(intent)
             }
             val closeFab = findViewById<FloatingActionButton>(R.id.save_fab)
             closeFab.imageResource = R.drawable.ic_check_circle
