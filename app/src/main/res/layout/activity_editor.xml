@@ -198,16 +198,32 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/image_fab"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|right|end"
+        android:layout_height="wrap_content">
+
+    <com.github.jorgecastilloprz.FABProgressCircle
+        android:id="@+id/fabProgressCircle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:onClick="updateImage"
-        android:src="@drawable/ic_add_a_photo_white_24dp"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:reusable="true"
+        app:finalIcon="@drawable/ic_done"
+        >
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/image_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:onClick="updateImage"
+            android:src="@drawable/ic_add_a_photo_white_24dp" />
+
+    </com.github.jorgecastilloprz.FABProgressCircle>
+
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/save_fab"

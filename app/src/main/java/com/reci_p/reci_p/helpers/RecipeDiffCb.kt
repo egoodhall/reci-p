@@ -19,8 +19,6 @@ class RecipeDiffCb(val old: List<Recipe>, val new: List<Recipe>) : DiffUtil.Call
         return new.size
     }
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return old[oldItemPosition].title == new[newItemPosition].title &&
-                old[oldItemPosition].owner == new[newItemPosition].owner &&
-                old[oldItemPosition].cookTime == new[newItemPosition].cookTime
+        return old[oldItemPosition].modifiedTS == new[newItemPosition].modifiedTS
     }
 }

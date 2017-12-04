@@ -7,7 +7,7 @@
     android:id="@+id/recipe_folding_cell">
 
 
-    <include layout="@layout/recipe_unfolded_small"
+    <include layout="@layout/recipe_unfolded"
         android:visibility="gone" />
 
     <include layout="@layout/recipe_small"

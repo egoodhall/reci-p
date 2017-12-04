@@ -14,6 +14,7 @@ import android.view.animation.TranslateAnimation
 import android.widget.*
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.github.jorgecastilloprz.FABProgressCircle
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -67,32 +68,6 @@ class EditorActivity : AppCompatActivity() {
                     setRecipeView()
                 }
             })
-        }
-        if (this.intent.hasExtra("recipeId") && this.intent.hasExtra("view")) {
-            findViewById<EditText>(R.id.recipeTitle).isEnabled = false
-            findViewById<EditText>(R.id.recipeDesc).isEnabled = false
-            findViewById<EditText>(R.id.recipeCookTime).isEnabled = false
-            findViewById<EditText>(R.id.recipePrepTime).isEnabled = false
-            findViewById<RatingBar>(R.id.recipeRating).isEnabled = false
-            findViewById<EditText>(R.id.instructionText).isEnabled = false
-            findViewById<EditText>(R.id.ingredientText).isEnabled = false
-            findViewById<Button>(R.id.add_instruction_button).isEnabled = false
-            findViewById<Button>(R.id.add_ingredient_button).isEnabled = false
-//            findViewById<FloatingActionButton>(R.id.image_fab).isEnabled = false
-//            findViewById<FloatingActionButton>(R.id.save_fab).isEnabled = false
-            val editFab = findViewById<FloatingActionButton>(R.id.image_fab)
-            editFab.imageResource = R.drawable.ic_action_edit
-            editFab.setOnClickListener {
-                val intent = Intent(applicationContext, EditorActivity::class.java)
-                intent.putExtra("recipeId", this.intent.getStringExtra("recipeId"))
-                startActivity(intent)
-            }
-            val closeFab = findViewById<FloatingActionButton>(R.id.save_fab)
-            closeFab.imageResource = R.drawable.ic_check_circle
-            closeFab.setOnClickListener {
-                finish()
-            }
-
         }
 
         setRecipeView()
@@ -251,12 +226,14 @@ class EditorActivity : AppCompatActivity() {
                     val uploadTask = storageRef.putFile(uri)
                     (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(uri, this@EditorActivity)
                     uploadStatus = true
-
+                    val fabProgress = findViewById<FABProgressCircle>(R.id.fabProgressCircle)
+                    fabProgress.show()
                     // Register observers to listen for when the download is done or if it fails
                     uploadTask.addOnFailureListener({ e ->
                         // Handle unsuccessful uploads
                         (findViewById<SimpleDraweeView>(R.id.app_bar_image)).setImageURI(null as String?)
                         Toast.makeText(this@EditorActivity, "Upload Failed: " + e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        fabProgress.hide()
                         uploadStatus = false
                     }).addOnSuccessListener({ taskSnapshot ->
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
@@ -264,7 +241,8 @@ class EditorActivity : AppCompatActivity() {
                         realm.executeTransaction {
                             recipeModel.photo = photo
                         }
-                        Toast.makeText(this@EditorActivity, "Upload successful, URL: " + downloadUrl, Toast.LENGTH_SHORT).show()
+                        fabProgress.beginFinalAnimation()
+//                        Toast.makeText(this@EditorActivity, "Upload successful, URL: " + downloadUrl, Toast.LENGTH_SHORT).show()
                         uploadStatus = false
                     })
 

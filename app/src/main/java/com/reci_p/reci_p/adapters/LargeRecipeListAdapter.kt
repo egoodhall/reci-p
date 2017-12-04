@@ -50,6 +50,7 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recip
         var instructionHolderUnfold = view.findViewById<LinearLayout>(R.id.recipeLarge_instructions_holder_unfold)
         var saveBtnUnfold = view.findViewById<Button>(R.id.recipeLarge_btn_save)
         var editBtnUnfold = view.findViewById<Button>(R.id.recipeLarge_btn_edit)
+        var recipeDescUnfold = view.findViewById<TextView>(R.id.recipeLarge_description_unfold)
     }
 
     override fun onBindViewHolder(holder: LargeRecipeListAdapter.CustomViewHolder, position: Int) {
@@ -72,6 +73,7 @@ class LargeRecipeListAdapter(val recipeList: List<Recipe>?, val onSelect: (recip
         //then set the TextViews
         holder.recipeTitle.text = recipe.title
         holder.recipeTitleUnfold.text = recipe.title
+        holder.recipeDescUnfold.text = recipe.description
         DataManager.getUser(recipe.creator, save = true) { owner ->
             if (owner != null) {
                 holder.recipeAuthor.text = owner.displayName

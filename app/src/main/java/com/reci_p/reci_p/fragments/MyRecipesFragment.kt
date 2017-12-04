@@ -39,12 +39,22 @@ class MyRecipesFragment : Fragment() {
 
     val data = RealmList<Recipe>()
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val swipeContainer = view!!.findViewById<SwipeRefreshLayout>(R.id.recyclerviewRecipes_swipeRefreshLayout)
+        swipeContainer.post {
+            swipeContainer.isRefreshing = true
+            updateDataSet {
+                swipeContainer.isRefreshing = false
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         activity.title = getString(R.string.title_my_recipes)
         val view = inflater?.inflate(R.layout.fragment_my_recipes, container, false)
         view!!.findViewById<FloatingActionButton>(R.id.fragmentMyRecipes_FAB).setOnClickListener {
             val intent = Intent(activity.applicationContext, EditorActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, 0)
         }
 
 
@@ -57,7 +67,7 @@ class MyRecipesFragment : Fragment() {
         myRecipes.adapter = LargeRecipeListAdapter(data) { recipe ->
             val intent = Intent(activity.applicationContext, EditorActivity::class.java)
             intent.putExtra("recipeId", recipe.id)
-            startActivity(intent)
+            startActivityForResult(intent, 0)
         }
 
 //        updateDataSet()
@@ -97,9 +107,9 @@ class MyRecipesFragment : Fragment() {
     fun updateDataSet(cb: (() -> Unit)? = null) {
         DataManager.getRecipesForUser(currentUser.uid, save = true, refresh = true) { recipes ->
             if (recipes != null) {
+                val diff = DiffUtil.calculateDiff(RecipeDiffCb(data, recipes))
                 data.clear()
                 data.addAll(recipes)
-                val diff = DiffUtil.calculateDiff(RecipeDiffCb(data, recipes))
                 diff.dispatchUpdatesTo(myRecipes.adapter)
             }
             if (cb != null) {

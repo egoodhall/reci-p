@@ -55,6 +55,8 @@ class SmallRecipeListAdapter(val data: MutableList<Recipe>,
 
         holder.detail.text = data[position].cookTime
         holder.title.text = data[position].title
+        holder.recipeDescUnfold.text = recipe.description
+
         holder.actionButton.text = "Save"
         holder.actionButton.setOnClickListener {
             val newRecipe = Recipe(FirebaseAuth.getInstance().currentUser!!.uid, UUID.randomUUID().toString(), recipe)
@@ -125,6 +127,7 @@ class SmallRecipeListAdapter(val data: MutableList<Recipe>,
 
         var image_unfold = view.findViewById<SimpleDraweeView>(R.id.imageView_unfold)
         var recipeTitleUnfold = view.findViewById<TextView>(R.id.recipeLarge_title_unfold)
+        var recipeDescUnfold = view.findViewById<TextView>(R.id.recipeLarge_description_unfold)
         var recipeAuthorUnfold = view.findViewById<TextView>(R.id.recipeLarge_author_unfold)
         var ratingUnfold = view.findViewById<RatingBar>(R.id.ratingBar_unfold)
         var cookTimeUnfold = view.findViewById<TextView>(R.id.recipeLarge_cook_time_unfold)
