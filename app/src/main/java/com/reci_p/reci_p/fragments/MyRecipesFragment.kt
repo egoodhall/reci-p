@@ -127,9 +127,9 @@ class MyRecipesFragment : Fragment() {
             val position = viewHolder.adapterPosition
 
             if (direction == ItemTouchHelper.RIGHT) {
-                val builder = AlertDialog.Builder(activity)
+                AlertDialog.Builder(activity)
                         .setMessage("Delete ${data[position]!!.title}?")
-                        .setPositiveButton("DELETE", DialogInterface.OnClickListener { dialog, which ->
+                        .setPositiveButton("DELETE",  { _, _ ->
                             DataManager.deleteRecipe(data[position]!!.id) { success ->
                                 if (success) {
                                     data.remove(data[position])
@@ -138,7 +138,7 @@ class MyRecipesFragment : Fragment() {
                             }
 
                         })
-                        .setNegativeButton("CANCEL", DialogInterface.OnClickListener { dialog, which ->
+                        .setNegativeButton("CANCEL", { _, _ ->
                             myRecipes.adapter.notifyItemRemoved(position + 1)
                             myRecipes.adapter.notifyItemRangeChanged(position, myRecipes.adapter.getItemCount())
                         }).show()

@@ -41,6 +41,7 @@ class SmallRecipeListAdapter(val data: MutableList<Recipe>,
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val recipe = data!![position]
 
+        holder.img.setImageURI("")
         if (recipe.photo != "") {
             Log.d("Reci-P", "HERE ${recipe.photo}")
             val urlString = "gs://${FirebaseApp.getInstance()!!.options!!.storageBucket}/${recipe.photo}"
@@ -86,12 +87,14 @@ class SmallRecipeListAdapter(val data: MutableList<Recipe>,
         holder.cookTimeUnfold.text = recipe.cookTime
         holder.prepTimeUnfold.text = recipe.prepTime
 
+        holder.ingredientHolderUnfold.removeAllViews()
         for (i in recipe.ingredients) {
             val view = LayoutInflater.from(holder.view.context).inflate(R.layout.ingredient, null)
             view.findViewById<TextView>(R.id.ingredient_text).text = i
             holder.ingredientHolderUnfold.addView(view)
         }
 
+        holder.instructionHolderUnfold.removeAllViews()
         for (i in recipe.instructions) {
             val view = LayoutInflater.from(holder.view.context).inflate(R.layout.instruction, null)
             view.findViewById<TextView>(R.id.instruction_text).text = i
