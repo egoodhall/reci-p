@@ -79,6 +79,10 @@ dependencies {
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.0.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
+    // Flipcard
+    implementation 'com.ramotion.foldingcell:folding-cell:1.2.1'
+
+
     implementation 'com.android.support:support-v4:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {

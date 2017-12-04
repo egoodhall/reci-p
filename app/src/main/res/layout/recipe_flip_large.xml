@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ramotion.foldingcell.FoldingCell xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:folding-cell="http://schemas.android.com/apk/res-auto"
+    folding-cell:backSideColor="@color/primaryDarkColor"
+    android:id="@+id/recipe_folding_cell">
+
+
+    <include layout="@layout/recipe_unfolded_large"
+        android:visibility="gone" />
+
+    <include layout="@layout/recipe_large"
+        />
+
+
+</com.ramotion.foldingcell.FoldingCell>

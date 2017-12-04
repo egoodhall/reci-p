@@ -113,20 +113,14 @@ class UserProfileActivity : AppCompatActivity() {
         data = ArrayList()
 
         // Create a copy of the recipe with a new id and owner
-        val saveRecipe = { view: View, pos: Int ->
-            val recipe = Recipe(FirebaseAuth.getInstance().currentUser!!.uid, UUID.randomUUID().toString(), data[pos])
-            DataManager.createRecipe(recipe, {})
-        }
-
         val launchEditor = { recipe: Recipe ->
             val intent = Intent(applicationContext, EditorActivity::class.java)
             intent.putExtra("recipeId", recipe.id)
-            intent.putExtra("view", 1)
             startActivity(intent)
         }
 
         // Set adapter
-        list.adapter = SmallRecipeListAdapter(data, launchEditor, saveRecipe)
+        list.adapter = SmallRecipeListAdapter(data, launchEditor)
         list.layoutManager = LinearLayoutManager(applicationContext)
 
         // Populate data
