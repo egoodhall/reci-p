@@ -59,7 +59,11 @@ class EditorActivity : AppCompatActivity() {
         if (this.intent.hasExtra("recipeId")) {
             DataManager.getRecipe(this.intent.getStringExtra("recipeId"), { recipe ->
                 if (recipe != null) {
-                    this.recipeModel = recipe
+                    if (recipe.owner != FirebaseAuth.getInstance().currentUser!!.uid) {
+                        this.recipeModel = Recipe(FirebaseAuth.getInstance().currentUser!!.uid, UUID.randomUUID().toString(), recipe)
+                    } else {
+                        this.recipeModel = recipe
+                    }
                     setRecipeView()
                 }
             })
