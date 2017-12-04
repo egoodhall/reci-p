@@ -121,6 +121,7 @@ class UserProfileActivity : AppCompatActivity() {
         val launchEditor = { recipe: Recipe ->
             val intent = Intent(applicationContext, EditorActivity::class.java)
             intent.putExtra("recipeId", recipe.id)
+            intent.putExtra("view", 1)
             startActivity(intent)
         }
 

@@ -1,7 +1,10 @@
 package com.reci_p.reci_p.activities
 
 import android.Manifest
+import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +25,8 @@ import com.reci_p.reci_p.helpers.DataManager
 import com.reci_p.reci_p.helpers.DataManager.Companion.realm
 import gun0912.tedbottompicker.TedBottomPicker
 import io.realm.RealmList
+import org.jetbrains.anko.image
+import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.sdk25.coroutines.onLongClick
 import java.util.*
 
@@ -59,6 +64,36 @@ class EditorActivity : AppCompatActivity() {
                 }
             })
         }
+        if (this.intent.hasExtra("recipeId") && this.intent.hasExtra("view")) {
+            findViewById<EditText>(R.id.recipeTitle).isEnabled = false
+            findViewById<EditText>(R.id.recipeDesc).isEnabled = false
+            findViewById<EditText>(R.id.recipeCookTime).isEnabled = false
+            findViewById<EditText>(R.id.recipePrepTime).isEnabled = false
+            findViewById<RatingBar>(R.id.recipeRating).isEnabled = false
+            findViewById<EditText>(R.id.instructionText).isEnabled = false
+            findViewById<EditText>(R.id.ingredientText).isEnabled = false
+            findViewById<Button>(R.id.add_instruction_button).isEnabled = false
+            findViewById<Button>(R.id.add_ingredient_button).isEnabled = false
+//            findViewById<FloatingActionButton>(R.id.image_fab).isEnabled = false
+//            findViewById<FloatingActionButton>(R.id.save_fab).isEnabled = false
+            if (recipeModel.owner == FirebaseAuth.getInstance().currentUser!!.uid) {
+                val editFab = findViewById<FloatingActionButton>(R.id.image_fab)
+                editFab.imageResource = R.drawable.ic_action_edit
+                editFab.setOnClickListener {
+                    val intent = Intent(applicationContext, EditorActivity::class.java)
+                    intent.putExtra("recipeId", this.intent.getStringExtra("recipeId"))
+                    startActivity(intent)
+                }
+            } else {
+                findViewById<FloatingActionButton>(R.id.image_fab).visibility = View.GONE
+            }
+            val closeFab = findViewById<FloatingActionButton>(R.id.save_fab)
+            closeFab.imageResource = R.drawable.ic_check_circle
+            closeFab.setOnClickListener {
+                finish()
+            }
+
+        }
 
         setRecipeView()
 
@@ -66,7 +101,9 @@ class EditorActivity : AppCompatActivity() {
     }
 
     fun addIngredient(v : View) {
-        recipeModel.ingredients.add((findViewById<EditText>(R.id.ingredientText)).text.toString())
+        realm.executeTransaction {
+            recipeModel.ingredients.add((findViewById<EditText>(R.id.ingredientText)).text.toString())
+        }
         updateRecipeView()
     }
 
@@ -75,7 +112,9 @@ class EditorActivity : AppCompatActivity() {
         val ingr = v.findViewById<TextView>(R.id.ingredient_text).text.toString()
         val newIngredients = recipeModel.ingredients.toMutableList()
         newIngredients.remove(ingr)
-        recipeModel.ingredients = RealmList(*newIngredients.toTypedArray())
+        realm.executeTransaction {
+            recipeModel.ingredients = RealmList(*newIngredients.toTypedArray())
+        }
         val animation = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_PARENT, 1.1f,
                 Animation.RELATIVE_TO_PARENT, 0f,
@@ -95,7 +134,9 @@ class EditorActivity : AppCompatActivity() {
 
 
     fun addInstruction(v : View) {
-        recipeModel.instructions.add((findViewById<EditText>(R.id.instructionText)).text.toString())
+        realm.executeTransaction {
+            recipeModel.instructions.add((findViewById<EditText>(R.id.instructionText)).text.toString())
+        }
         updateRecipeView()
     }
 
@@ -104,7 +145,9 @@ class EditorActivity : AppCompatActivity() {
         val ingr = v.findViewById<TextView>(R.id.instruction_text).text.toString()
         val newInstructions = recipeModel.instructions.toMutableList()
         newInstructions.remove(ingr)
-        recipeModel.instructions = RealmList(*newInstructions.toTypedArray())
+        realm.executeTransaction {
+            recipeModel.instructions = RealmList(*newInstructions.toTypedArray())
+        }
         val animation = TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0f,
                 Animation.RELATIVE_TO_PARENT, 1.1f,
                 Animation.RELATIVE_TO_PARENT, 0f,

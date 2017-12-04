@@ -57,6 +57,7 @@ class MyRecipesFragment : Fragment() {
         myRecipes.adapter = LargeRecipeListAdapter(data) { recipe ->
             val intent = Intent(activity.applicationContext, EditorActivity::class.java)
             intent.putExtra("recipeId", recipe.id)
+            intent.putExtra("view", "1")
             startActivity(intent)
         }
 
