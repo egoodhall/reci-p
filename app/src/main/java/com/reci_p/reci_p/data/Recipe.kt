@@ -56,16 +56,17 @@ open class Recipe (
             obj.put("prep_time", recipe.prepTime)
             obj.put("cook_time", recipe.cookTime)
 
-            var arr = JSONArray()
+            var arr1 = JSONArray()
             recipe.ingredients.forEach { ingr ->
-                arr.put(ingr)
+                arr1.put(ingr)
             }
-            obj.put("ingredients", arr)
+            obj.put("ingredients", arr1)
 
+            var arr2 = JSONArray()
             recipe.instructions.forEach { instr ->
-                arr.put(instr)
+                arr2.put(instr)
             }
-            obj.put("instructions", arr)
+            obj.put("instructions", arr2)
 
             obj.put("photo", recipe.photo)
             obj.put("id", recipe.id)
@@ -96,7 +97,7 @@ open class Recipe (
 //                Log.d("INSTRUCTIONS", "${obj["instructions"]}")
                 val instr = JSONArray(obj.getString("instructions"))
                 for (idx in 0..instr.length()-1) {
-                    recipe.ingredients.add(instr.getString(idx))
+                    recipe.instructions.add(instr.getString(idx))
                 }
             }
             if (obj.getString("photo") != null) recipe.photo = obj.getString("photo") else ""
@@ -110,6 +111,7 @@ open class Recipe (
             } catch (exception: Exception) {
                 Log.e("RECIPE", "${exception.localizedMessage}")
             }
+            Log.d("ERIC", "${obj}")
             return recipe
         }
 
