@@ -105,5 +105,6 @@
     <string name="title_my_recipes">My Recipes</string>
     <string name="title_my_profile">My Profile</string>
     <string name="title_recipe_feed">Recipe Feed</string>
+    <string name="title_activity_test_flip">TestFlipActivity</string>
 
 </resources>
